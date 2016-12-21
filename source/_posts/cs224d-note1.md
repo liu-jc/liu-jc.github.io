@@ -9,7 +9,8 @@ categories: ml_dl
 这个笔记主要包括：  
 1. NLP的概念以及NLP面对的问题  
 2. word vector的概念  
-3. 生成word vector 流行的方法 
+3. 生成word vector 流行的方法   
+
 <!--more--> 
 ## Introduction to NLP    
 NLP的目标：使计算机理解自然语言从而能够完成其他的任务。  
