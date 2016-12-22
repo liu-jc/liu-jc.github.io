@@ -71,3 +71,7 @@ deploy:
   type: git
   repository: https://github.com/liu-jc/liu-jc.github.io.git
   branch: master
+
+#plugins:
+#plugins:
+#- hexo-math
