@@ -46,7 +46,7 @@ $$
 
 3. 前向传播计算
 输入向量$x \in R^n$,经过一层网络生成 $a \in R^m$
-使用另一个矩阵$U \in R^{m*1}$来生成一个没有被标准化的值用于进行分类任务： 
+使用另一个矩阵$U \in R^{m\*1}$来生成一个没有被标准化的值用于进行分类任务： 
 $$
 s = U^Ta = U^Tf(Wx+b)
 $$
@@ -157,12 +157,15 @@ $$
         $$
         rect(z) = max(z,0)
         $$
-        $$ rect'(z)=\left\{
-        \begin{aligned}
-        & 1 : z>0\\
-        & 0 : otherwise\\ 
-        \end{aligned}
-        \right.
+
+        $$
+        \begin{equation*} 
+        rect'(z)=
+        \begin{cases} 
+        1,& \mbox{if $z>0$ }\\
+        0,& otherwise\\
+        \end{cases} 
+        \end{equation*}
         $$
     * Leaky ReLu
 
