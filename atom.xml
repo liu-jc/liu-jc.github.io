@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>liujc</title>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2017-03-31T16:51:24.000Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>liujc</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>cs224d-note3</title>
+    <link href="http://yoursite.com/2017/03/31/cs224d-note3/"/>
+    <id>http://yoursite.com/2017/03/31/cs224d-note3/</id>
+    <published>2017-03-31T03:30:14.000Z</published>
+    <updated>2017-03-31T16:51:24.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>note3主要介绍了神经网络的基本原理与一些技巧，都比较简单。以前看过写起来比较快，但是不排除我理解有错误或者说我写错了，所以如果发现有错误，希望指出并与我联系。<br>Keyphrases:</p>
+<ul>
+<li>前向计算，后向传播</li>
+<li>Max-margin loss</li>
+<li>梯度检测以及参数初始化</li>
+<li>学习率和Adagrad</li>
+</ul>
+<a id="more"></a>
+<h3 id="神经网路基础"><a href="#神经网路基础" class="headerlink" title="神经网路基础"></a>神经网路基础</h3><p>由于大量的数据是非线性可分的，所以需要非线性分类器，那么神经网络就是一组非线性分类器。</p>
+<ol>
+<li><p>一个神经元<br>单个计算单元将n维的向量 $x$ 作为输入，产生一个标量的输出 $a$，当然这个神经元同样与一个n维的权值向量$w$连接，以及一个偏移标量$b$。<br>假设我们使用了sigmoid 激活函数：<br>$$<br>f(z) = \frac1 {1 + exp(z)}<br>$$<br>神经元的输出可以表示为：<br>$$<br>a = \frac1 {1+exp(-w^Tx+b)}<br>$$<br>将偏移量和权值向量组合到一起可表示为：<br>$$<br>a = \frac1 {1+exp(-[w^T\quad b] \cdot [x\quad1]}<br>$$<br>下图直观的表示了这一过程<br><img src="/images/14909331043266.jpg" alt="">    </p>
+</li>
+<li><p>单层的网络<br>就是简单的将每个神经元叠加起来就好了。都比较简单。<br>假设这一层有m个神经元，前一层有n个神经元：<br><img src="/images/14909338524658.jpg" alt=""><br>定义符号，并都用矩阵和向量表示<br><img src="/images/14909339654416.jpg" alt=""><br>那么很容易知道激活前的值就是:<br>$$<br>z = Wx + b<br>$$<br>经过sigmoid激活函数之后：<br><img src="/images/14909341580955.jpg" alt=""></p>
+</li>
+<li><p>前向传播计算<br>输入向量$x \in R^n$,经过一层网络生成 $a \in R^m$<br>使用另一个矩阵$U \in R^{m*1}$来生成一个没有被标准化的值用于进行分类任务：<br>$$<br>s = U^Ta = U^Tf(Wx+b)<br>$$<br>直观来说假设我们4维的词向量以及window的大小为5，作为输入,那么$x \in R^{20}$。如果使用8个神经元，生成一个值，那么$W \in R^{8*20}$,$b \in R^8$, $U \in R^{8*1}$, $s \in R$。</p>
+</li>
+<li><p>最大间距目标函数<br>思想在于确保正样本的值高于负样本的值。<br>假设正样本的值为$s$,负样本的值为$s_c$<br>$s_c = U^Tf(Wx_c+b)$,$s = U^Tf(Wx+b)$<br>那么目标函数的就是希望去最大化$(s-s_c)$,或者说是最小化$(s_c-s)$。<br>如果$s_c-s&lt;0$，我们就不管认为这时候的代价为0，只计算负样本的值比正样本的值大的时候。所以修改目标为：<br>$$<br>minimize J = max(s_c-s,0)<br>$$<br>还可以修改一下，设定一个安全的边界$\Delta$，在$s - s_c &lt; \Delta$时计算，修改优化目标：<br>$$<br>minimize J = max(\Delta+s_c-s,0)<br>$$<br>可以取$\Delta = 1$，则：<br>$$<br>minimize J = max(1+s_c-s,0)<br>$$</p>
+</li>
+<li><p>后向传播<br>更新网络参数的关键在于求出$J$对每个参数的导数。利用链式法则进行。给出如下的网络图：<br><img src="/images/14909367021587.jpg" alt=""></p>
+</li>
+</ol>
+<p>可以用$W^{(2)} = U$来表示统一权值的符号<br>假设现在要对$W_{14}^{(1)}$进行更新，可以知道$w_{14}^{(1)}$只对$z^{(2)}_1$以及$a^{(2)}_1$有贡献，所以只受这两个的影响。可以先求出$j$对$s$的导数<br>$$<br>\frac{\partial J}{\partial s} = - \frac{\partial J}{\partial s_c} = -1<br>$$<br>那么接下来求$\frac{\partial s}{\partial W^{(1)}_{ij}}$：<img src="/images/14909371685191.jpg" alt=""></p>
+<p>令$\delta_i^{(2)} = W_i^{(2)}f’(z_i^{(2)})$<br>则可得 $\frac{\partial s}{\partial W_{ij}^{(1)}}= \delta_i \cdot a_j^{(i)}$</p>
+<p>根据上面的过程可以很容易的知道：<br>$$<br>\begin{split}<br>\frac{\partial s}{\partial {b_{i}^{(2)}}} &amp;= W_i^{(2)} \frac{\partial {a_i^{(2)}}} {\partial {z_i^{(2)}}} \frac{\partial {z_i^{(2)}}} {\partial {b_{i}^{(2)}}}\\<br>&amp;=W_i^{(2)}f’(z_i^{(2)})\\<br>&amp;=\delta_i^{(2)}<br>\end{split}<br>$$<br>lecture note上还提供了另一种解释，这里就不赘述了，有兴趣的可以看一下。</p>
+<p>将$\delta^{(k)}$推广到$\delta^{(k-1)}$：<br>直观的图片演示<br><img src="/images/14909469255545.jpg" alt=""></p>
+<p>链式求导，推导：<br>$$<br>\begin{split}<br>\delta_j^{(k-1)} &amp;= \frac{\partial s}{\partial z_j^{(k-1)}}\\<br>&amp;= \frac{\partial s}{\partial z^{(k)}} \frac{\partial z^{(k)}}{\partial z_j^{(k-1)}}\\<br>&amp;=  \frac{\partial s}{\partial z^{(k)}} \frac{\partial z^{(k)}}{\partial a_j^{(k-1)}}\frac{\partial a_j^{(k-1)}}{\partial z_j^{(k-1)}}\\<br>&amp;= \sum_i \frac{\partial s}{\partial z_i^{(k)}}\frac{\partial z_i^{(k)}}{\partial a_j^{(k-1)}}\frac{\partial a_j^{(k-1)}}{\partial z_j^{(k-1)}}\\<br>&amp;= f’(z_j^{(k-1)})\sum_i \delta_i^{(k)}W_{ij}^{(k-1)}<br>\end{split}<br>$$</p>
+<ol>
+<li>向量化后向传播的过程<br>因为<br>$$<br>\frac{\partial s}{\partial W_{ij}^{(k)}}= \delta_i^{(k+1)} \cdot a_j^{(k)}<br>$$</li>
+</ol>
+<p>所以$W^{(k)}$的导数为：<br><img src="/images/14909480724842.jpg" alt=""></p>
+<p>现在计算$\delta$的向量化传播：<br>$$<br>\delta_j^{(k)}= f’(z_j^{(k-1)})\sum_i \delta_i^{(k)}W_{ij}^{(k-1)}<br>$$<br>$$<br>\delta^{(k)} = f’(z^{(k)}) \circ (W^{(k)T}\delta^{(k+1)})<br>$$<br>($\circ$ 为元素按位相乘：$R^N \times R^N \rightarrow R^N$）</p>
+<p>在计算的时候$\delta^{(k)}$只取决于前一个$\delta^{(k+1)}$</p>
+<h3 id="Tips-amp-Tricks"><a href="#Tips-amp-Tricks" class="headerlink" title="Tips &amp; Tricks"></a>Tips &amp; Tricks</h3><ol>
+<li><p>梯度检查<br>利用一个数值方法估计梯度：<br>$f’(\theta) \approx \frac{J(theta^{(i+)} - J(\theta^{(i-)})}{2\varepsilon}$<br>其中 $\theta^{(i+)} = \theta + \varepsilon \times e_i$<br>利用这个数值估计跟反向传播得到的梯度进行比较，进行梯度检查，是否出错。</p>
+</li>
+<li><p>正则化<br>用来防止overfitting，利用$L_2$范数：<br>$$<br>J_R = J + \lambda\sum_{i=1}^L\left \lVert W^{(i)}\right \rVert_F<br>$$<br>其中 $\left \lVert W^{(i)} \right \rVert_F$ 为Frobenius norm<br>利用这样的正则项来惩罚权值过大，从而降低了分类器的灵活性降低了过拟合的风险。<br>要注意的是偏移量不需要被正则化，这里我的理解是如果限制偏移量，会限制灵活性，从而导致泛化能力变差吧？ 因为偏移量的作用就是让他离开0的位置，如果惩罚的话$\lambda$极度大的时候等于就没有了。（个人理解也不知道对不对）</p>
+</li>
+<li><p>激活函数（具体可以查，这里简单说一下个别）</p>
+<ul>
+<li>sigmoid</li>
+<li>Tanh</li>
+<li>Hard tanh</li>
+<li>Soft sign<br>  $\text{softsign}(z) = \frac{z}{1 + |z|}$<br>  这里我感觉lecture note 里面导数推错了，我认为是这样的:<br>  $\text{softsign}’(z) = \frac{1}{(1+sgn(z)*z)^2}$<br>  其中$sgn$ 为$\pm1$取决于$z$的符号</li>
+<li><p>ReLU(很常用，并且好像有文章对比过收敛会快点）<br>  $$<br>  rect(z) = max(z,0)<br>  $$</p>
+<p>  $$<br>  \begin{equation*}<br>  rect’(z)=<br>  \begin{cases}<br>  1,&amp; \mbox{if $z&gt;0$ }\\<br>  0,&amp; otherwise\\<br>  \end{cases}<br>  \end{equation*}<br>  $$</p>
+</li>
+<li>Leaky ReLu</li>
+</ul>
+</li>
+<li><p>Xavier参数初始化<br> 对于sigmoid 和 tanh的激活单元，当$W \in R^{n^{(l+1)} \times n^{(l)}}$时以这样的方式进行初始化的话，可以获得更快的收敛速度和更小的错误率：<br> <img src="/images/14909642115056.jpg" alt=""><br>对于偏移量的话初始化为0</p>
+</li>
+<li><p>学习率</p>
+</li>
+</ol>
+<p>固定的学习率$\alpha$，不能设置太大<br><img src="/images/14909657862801.jpg" alt=""><br>还有一种方法是让学习率随着迭代次数下降：<br><img src="/images/14909660780243.jpg" alt=""></p>
+<p>其中$a_0$是一个可调的参数表示初始的学习率，$\tau$也是可调的参数表示学习率开始下降的时间</p>
+<ol>
+<li>自动调节学习率的方法，Adagrad<br> 可以使得每个参数的学习率都不同，取决于历史的更新，越少进行更新的参数采用的学习率大于那些更新频繁的参数。<br> 具体如下：<br> <img src="/images/14909665683626.jpg" alt=""><br> 简单实现如下：<br> <img src="/images/14909666223917.jpg" alt=""></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;note3主要介绍了神经网络的基本原理与一些技巧，都比较简单。以前看过写起来比较快，但是不排除我理解有错误或者说我写错了，所以如果发现有错误，希望指出并与我联系。&lt;br&gt;Keyphrases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;前向计算，后向传播&lt;/li&gt;
+&lt;li&gt;Max-margin loss&lt;/li&gt;
+&lt;li&gt;梯度检测以及参数初始化&lt;/li&gt;
+&lt;li&gt;学习率和Adagrad&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>cs224d_note2</title>
+    <link href="http://yoursite.com/2016/12/21/cs224d-note2/"/>
+    <id>http://yoursite.com/2016/12/21/cs224d-note2/</id>
+    <published>2016-12-21T03:24:07.000Z</published>
+    <updated>2017-03-31T16:11:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>作为总结与提炼，写的不好的地方还请大家指点：）<br>原版讲义地址：<a href="http://cs224d.stanford.edu/lecture_notes/notes2.pdf" target="_blank" rel="external">http://cs224d.stanford.edu/lecture_notes/notes2.pdf</a><br>keyphrases：</p>
+<ul>
+<li>固有的以及外在的评估</li>
+<li>超参数对于类比评估任务的影响</li>
+<li>人类判断与词向量距离的相关性</li>
+<li>利用上下文处理歧义</li>
+<li>window classification  </li>
+</ul>
+<a id="more"></a>
+<h3 id="词向量的评估"><a href="#词向量的评估" class="headerlink" title="词向量的评估"></a>词向量的评估</h3><p>利用word2vec 和GloVe等方法来训练并且发现自然语言词汇在语义空间上的潜在向量表达。考虑如何量化的评估词向量的质量  </p>
+<ol>
+<li><p>内在的评估<br>对于生成的词向量，在特定的子任务上进行评估，子任务要求简单并且能够快速的计算，使得我们能够直观的得知生成的词向量在子任务上的效果。由于整个系统往往是有个深度神经网络的，训练时间太长。所以使用这样内在评估的方法来度量这个word2vec 系统的好坏。由于这样就需要这个评估对最后的整个任务有着正相关性。<br> 特点：</p>
+<ul>
+<li>在特定的中间任务上评估</li>
+<li>快速计算效果</li>
+<li>帮助理解子系统</li>
+<li>需要有与实际任务有正相关来确定是否有用  </li>
+</ul>
+</li>
+<li><p>外部的评估<br>与之前相反，是在实际任务上进行的评估。<br> 特点：</p>
+<ul>
+<li>在实际任务上进行评估</li>
+<li>计算慢</li>
+<li>出现问题的时候不能确定是这个子系统还是其他子系统，或者是内在的关系导致的</li>
+<li>如果替换子系统提高了整个任务的效果，那么这个改变应该是好的  </li>
+</ul>
+</li>
+<li><p>内在评估的例子：词向量类比<br>对于词向量的内在评估的选择有一种做法是看在完成词向量类比任务上的表现。在一个词向量类比中，给出如下形式的未完成的类比：$a : b :: c : ?$<br>这个词向量确定了能够最大化这个cosine像吸毒的词向量：<br>$$<br>d = \underset{i}{argmax}\frac{(x_b-x_a+x_c)^Tx_i}{\left | x_b-x_a+x_c \right |}<br>$$<br>这个度量方法很容易理解。在理性情况下，我们希望$x_b-x_a=x_d-x_c$（例如，queen - king = actress - actor）。希望$x_b-x_a+x_c=x_d$ ，就可以利用这个最大化两个词向量之间的归一化点乘来确定向量$x_d$<br>词向量类比主要有两种形式，一种是语义上的类比，一种是句法上的类比。   </p>
+</li>
+<li><p>内在评估调整举例：类比评估<br>考虑在word embedding 中使用的一些超参数能够通过内在评估系统进行调整。<br>在内在评估任务中可以考虑为word embedding 调整的参数：</p>
+<ul>
+<li>词向量的维度</li>
+<li>语料库大小</li>
+<li>语料库的来源或者类型</li>
+<li>上下文窗口大小</li>
+<li>上下文的对称性<br>运用不同的word embedding方法在同相同的参数的一个类比评估任务中，观察得到：</li>
+<li>性能严重取决于使用的word embedding 的模型</li>
+<li>更大的语料库可以使得性能提升</li>
+<li>在极度低或极度高的词向量维度下，性能都会更低。（低维度的话模型复杂度太低，high bias ，高维度的话可能获取过多噪声，high variance）  </li>
+</ul>
+</li>
+<li><p>内在评估举例：相关性评估<br>评估词向量的质量还可以通过询问人来进行相似性的评估打分，然后再利用这个跟cosine相似度比较。 </p>
+</li>
+<li><p>处理词的歧义<br>同一个词可能有多个不同的词向量来处理歧义的问题，例如run 是 动词也是名词，如何使用和解释是基于上下文的。<br>Improving Word Representations Via Global Context And Multiple Word Prototypes (Huang et al, 2012) 在这篇详细的说明了（还没看orz，抽时间看一下）<br>主要方法步骤： </p>
+<ul>
+<li>在这个词汇出现的所有地方获取固定大小的上下文窗口</li>
+<li>每一个上下文都被表示成一个上下文词向量的权重平均</li>
+<li>应用k-means 将这些上下文表达聚类</li>
+<li>最后每个出现的地方都被重新标记成其相关的类，并用于训练对应类的次表达  </li>
+</ul>
+</li>
+</ol>
+<h3 id="外部任务的训练"><a href="#外部任务的训练" class="headerlink" title="外部任务的训练"></a>外部任务的训练</h3><p>讨论如何处理外部任务  </p>
+<ol>
+<li><p>问题的指定<br>大多NLP的外部任务都可以被看做分类的任务，例如情感分类，以及命名实体识别问题（NER）上 。<br>在这样的任务中，训练集可以表示成如下形式：<br>$$<br>{x^{(i)},y^{(i)}} ^N_1<br>$$<br>$x^{(i)}$是一个d维的词向量，$y^{(i)}$是一个C维的onehot 向量，表示榆次的分类。 </p>
+</li>
+<li><p>词向量再训练<br>在nlp应用中，在对外部任务进行训练的时候可以对输入的词向量进行再训练。<br>利用外部任务对预训练过的词向量进行再训练，可以使任务表现的更好。但只有在大的训练数据集上才考虑使用再训练，在小的数据集上，只会变得更糟。  </p>
+</li>
+<li><p>softmax分类以及正则化<br>softmax分类通俗来讲就是计算每一类的概率，从而选取最大的那一类。利用交叉熵来定义损失函数。这部分不了解的可以查看cs229的讲义。公式部分这里不再赘述了。<br>考虑在同时更新模型权值以及词向量，需要的参数数量。在简单的线性分类中，更新权值需要$C*d$个参数，如果更新词典中每个词的词向量，需要$|V|*d$。 </p>
+</li>
+<li><p>Window classification<br>我们之前是使用单个词向量x作为输入，但自然语言中，一个词的意思在不同的上下文中有着不同的意思。所以考虑将一个序列的词语作为输入。<br>窄的窗口大小对句法有更好的表现，宽的则对语义有着更好的表现。<br>基于这个想法，就将$x^{(i)}_{windows}$ 代替 $x^{(i)}$<br><img src="/images/windows.png" alt=""><br>词向量的梯度则变为：<br><img src="/images/gadient.png" alt="">  </p>
+</li>
+<li><p>非线性分类器<br>线性分类器通常过于简单了，需要像神经网络这样的非线性分类器。note3中会介绍。</p>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;作为总结与提炼，写的不好的地方还请大家指点：）&lt;br&gt;原版讲义地址：&lt;a href=&quot;http://cs224d.stanford.edu/lecture_notes/notes2.pdf&quot;&gt;http://cs224d.stanford.edu/lecture_notes/notes2.pdf&lt;/a&gt;&lt;br&gt;keyphrases：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;固有的以及外在的评估&lt;/li&gt;
+&lt;li&gt;超参数对于类比评估任务的影响&lt;/li&gt;
+&lt;li&gt;人类判断与词向量距离的相关性&lt;/li&gt;
+&lt;li&gt;利用上下文处理歧义&lt;/li&gt;
+&lt;li&gt;window classification  &lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="ml_dl" scheme="http://yoursite.com/categories/ml-dl/"/>
+    
+    
+      <category term="ml_dl" scheme="http://yoursite.com/tags/ml-dl/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>cs224d_note1</title>
+    <link href="http://yoursite.com/2016/12/21/cs224d-note1/"/>
+    <id>http://yoursite.com/2016/12/21/cs224d-note1/</id>
+    <published>2016-12-21T02:58:38.000Z</published>
+    <updated>2017-03-31T16:11:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>对于lecture note1的总结与记录。有不对的地方还请大家指点：）<br>这个笔记主要包括：  </p>
+<ol>
+<li>NLP的概念以及NLP面对的问题  </li>
+<li>word vector的概念  </li>
+<li>生成word vector 流行的方法   </li>
+</ol>
+<a id="more"></a> 
+<h2 id="Introduction-to-NLP"><a href="#Introduction-to-NLP" class="headerlink" title="Introduction to NLP"></a>Introduction to NLP</h2><p>NLP的目标：使计算机理解自然语言从而能够完成其他的任务。<br>几乎所有NLP任务的最重要的共同的事情是如何将word表达成输入的形式给我们的模型<br>我们需要直观的表示来知晓词之间的相似性以及差异。<br>运用wordvector，可以很容易的将这些性质编码到向量本身中去。  </p>
+<h2 id="Word-vectors"><a href="#Word-vectors" class="headerlink" title="Word vectors"></a>Word vectors</h2><p>假设词之间是有某些联系的。所以将词编码成vector表示”词空间”中的点。<br>最简单的是使用one-hot vector<br>每个词是一个<a href="http://www.codecogs.com/eqnedit.php?latex=R^{|v|&space;*&space;1}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?R^{|v|&space;*&space;1}" title="R^{|v| * 1}"></a>的向量，只有一个地方是1，表示这个单词的索引。<br>这样我们就讲每个词表示成为了完全独立的了。这不能给我们带来任何相似性的信息。因为可以发现任何两个wordvector做内积都是0。<br>试着降低空间的维度，尝试找到一个子空间能够编码词之间的关系。  </p>
+<h2 id="SVD-Based-Methods"><a href="#SVD-Based-Methods" class="headerlink" title="SVD Based Methods"></a>SVD Based Methods</h2><p>用此方法找word vector<br>对于整个dataset，在某种形式的矩阵X中累计词共同出现的次数，然后对X应用SVD分解得到<a href="http://www.codecogs.com/eqnedit.php?latex=USV^{T}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?USV^{T}" title="USV^{T}"></a>,然后使用U的行作为我们词典中词的word embeding。<br>接下来讨论X的几种选择  </p>
+<ol>
+<li><strong>词-文档矩阵</strong><br>假设在同一文档中出现的词是有关的。<br>使用如下方法构造X: 遍历所有文档中的所有词，对于word i 出现在 document j 中，就在<a href="http://www.codecogs.com/eqnedit.php?latex=X_{ij}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?X_{ij}" title="X_{ij}"></a>上+1，所以<a href="http://www.codecogs.com/eqnedit.php?latex=X\in{R^{|V|&space;*&space;M}}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?X\in{R^{|V|&space;*&space;M}}" title="X\in{R^{|V| * M}}"></a>。 M 为documents 的个数。  </li>
+<li><strong>window based Co-occurrenceMatrix</strong><br>X 保存词共同出现的次数，对于每个词计算在特定大小的window中的周边词出现的次数。<br>假设语料库就3句话，window size 为1：<br><img src="/images/Co-occur_mat.png" alt="Co-occur_mat"><br>使用Word-Word Co-occurrence Matrix:  </li>
+<li>生成<a href="http://www.codecogs.com/eqnedit.php?latex=R^{|V|&space;*&space;|V|}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?R^{|V|&space;*&space;|V|}" title="R^{|V| * |V|}"></a>的矩阵X  </li>
+<li>对X运用SVD分解 ，<a href="http://www.codecogs.com/eqnedit.php?latex=X&space;=&space;USV^{T}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?X&space;=&space;USV^{T}" title="X = USV^{T}"></a>  </li>
+<li>对于U选择前k列，得到k维的word vector  </li>
+<li><a href="http://www.codecogs.com/eqnedit.php?latex=\frac{\sum_{i=1}^{k}\sigma_i}{\sum_{i=1}^{|V|}\sigma_i}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\frac{\sum_{i=1}^{k}\sigma_i}{\sum_{i=1}^{|V|}\sigma_i}" title="\frac{\sum_{i=1}^{k}\sigma_i}{\sum_{i=1}^{|V|}\sigma_i}"></a> 表明前k维获得的方差的数量。<br><img src="/images/SVD.png" alt="svd"><br>存在一些问题包括矩阵维度变化频繁，时间开销大等，也有一些解决办法（具体可以查看原note，这里不再赘述）</li>
+</ol>
+<p>使用iteration based methods 能够解决大部分这些问题。  </p>
+<h2 id="Iteration-Based-Methods"><a href="#Iteration-Based-Methods" class="headerlink" title="Iteration Based Methods"></a>Iteration Based Methods</h2><p>不计算以及存储全局的信息，试着建立一个模型一次学一个迭代，最终对于给定上下文的word编码出概率。<br><strong>1. 语言模型</strong><br>对于一个token序列分配一个概率，如果是一个完全合法的句子，应该给出一个高的概率，否则应该给低的。<br>数学表达：  <a href="http://www.codecogs.com/eqnedit.php?latex=P(w_{1},w_{2},...,w_{n})" target="_blank"><img src="http://latex.codecogs.com/gif.latex?P(w_{1},w_{2},...,w_{n})" title="P(w_{1},w_{2},...,w_{n})"></a><br>假设完全独立的，即为一元语言模型(unigram model)：<br><a href="http://www.codecogs.com/eqnedit.php?latex=P(w_{1},w_{2},...,w_{n})&space;=&space;\prod_{i=1}^{n}P(w_{i})" target="_blank"><img src="http://latex.codecogs.com/gif.latex?P(w_{1},w_{2},...,w_{n})&space;=&space;\prod_{i=1}^{n}P(w_{i})" title="P(w_{1},w_{2},...,w_{n}) = \prod_{i=1}^{n}P(w_{i})"></a><br>接下来令序列的概率取决于成对的概率，二元语言模型(bigram model)：<br><a href="http://www.codecogs.com/eqnedit.php?latex=P(w_{1},w_{2},...,w_{n})&space;=&space;\prod_{i=2}^{n}P(w_{i}|w_{i-1})" target="_blank"><img src="http://latex.codecogs.com/gif.latex?P(w_{1},w_{2},...,w_{n})&space;=&space;\prod_{i=2}^{n}P(w_{i}|w_{i-1})" title="P(w_{1},w_{2},...,w_{n}) = \prod_{i=2}^{n}P(w_{i}|w_{i-1})"></a><br><strong>2. Continuous Bag of Words Model(CBOW)</strong><br>利用周边的词对中间的词进行预测或者生成<br>定义我们的输入输出，以及目标输出：<br><a href="http://www.codecogs.com/eqnedit.php?latex=x^{(c)}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?x^{(c)}" title="x^{(c)}"></a>为input one hot vector 或者上下文，output 表示为<a href="http://www.codecogs.com/eqnedit.php?latex=y^{(c)}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?y^{(c)}" title="y^{(c)}"></a>，目标输出为<a href="http://www.codecogs.com/eqnedit.php?latex=y" target="_blank"><img src="http://latex.codecogs.com/gif.latex?y" title="y"></a>是已知的中间的词的one hot vector.<br><a href="http://www.codecogs.com/eqnedit.php?latex=V\in{R^{n*|V|}}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?V\in{R^{n*|V|}}" title="V\in{R^{n*|V|}}"></a> :输入的词矩阵<br><a href="http://www.codecogs.com/eqnedit.php?latex=v_{i}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?v_{i}" title="v_{i}"></a>：V的一列，代表一个word i的输入向量表达<br><a href="http://www.codecogs.com/eqnedit.php?latex=U\in{R^{|V|&space;*&space;n}}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?U\in{R^{|V|&space;*&space;n}}" title="U\in{R^{|V| * n}}"></a>：输出的词矩阵<br><a href="http://www.codecogs.com/eqnedit.php?latex=u_i" target="_blank"><img src="http://latex.codecogs.com/gif.latex?u_i" title="u_i"></a>:U的一行，代表一个word i的输出向量表达<br><strong>CBOW步骤:</strong>   </p>
+<ol>
+<li>获得onehot word vectors <a href="http://www.codecogs.com/eqnedit.php?latex=(x^{c-m},...,x^{c-1},x^{c&plus;1},...,x^{c&plus;m}))" target="_blank"><img src="http://latex.codecogs.com/gif.latex?(x^{c-m},...,x^{c-1},x^{c&plus;1},...,x^{c&plus;m}))" title="(x^{c-m},...,x^{c-1},x^{c+1},...,x^{c+m}))"></a>  </li>
+<li>获得embedded word vectors对于上下文<a href="http://www.codecogs.com/eqnedit.php?latex=(v_{c-m}&space;=&space;Vx^{c-m},...,v_{c&plus;m}&space;=&space;Vx^{c&plus;m})" target="_blank"><img src="http://latex.codecogs.com/gif.latex?(v_{c-m}&space;=&space;Vx^{c-m},...,v_{c&plus;m}&space;=&space;Vx^{c&plus;m})" title="(v_{c-m} = Vx^{c-m},...,v_{c+m} = Vx^{c+m})"></a>  </li>
+<li>平均这些向量 <a href="http://www.codecogs.com/eqnedit.php?latex=\hat{v}&space;=&space;\frac{v_{c-m}&plus;...&plus;v_{c&plus;m}}{2m}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\hat{v}&space;=&space;\frac{v_{c-m}&plus;...&plus;v_{c&plus;m}}{2m}" title="\hat{v} = \frac{v_{c-m}+...+v_{c+m}}{2m}"></a>  </li>
+<li>生成score vector <a href="http://www.codecogs.com/eqnedit.php?latex=z&space;=&space;U\hat{v}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?z&space;=&space;U\hat{v}" title="z = U\hat{v}"></a>  </li>
+<li>将scores 变成概率<a href="http://www.codecogs.com/eqnedit.php?latex=\hat{y}&space;=&space;softmax(z)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\hat{y}&space;=&space;softmax(z)" title="\hat{y} = softmax(z)"></a>  </li>
+<li>期待<a href="http://www.codecogs.com/eqnedit.php?latex=\hat{y}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\hat{y}" title="\hat{y}"></a>与y相同  </li>
+</ol>
+<p>定义loss function(使用交叉熵):<br><img src="/images/loss.png" alt="loss1"><br>因为y是一个one hot vector，所以化简为：<br><img src="/images/loss2.png" alt="loss2"><br>形式化我们的优化目标：<br><img src="/images/CBOW_func.png" alt="fun1"><br>然后就可以使用梯度下降法更新所有相关的<a href="http://www.codecogs.com/eqnedit.php?latex=u_c" target="_blank"><img src="http://latex.codecogs.com/gif.latex?u_c" title="u_c"></a> 和<a href="http://www.codecogs.com/eqnedit.php?latex=v_j" target="_blank"><img src="http://latex.codecogs.com/gif.latex?v_j" title="v_j"></a>了<br><strong>3. Skip-Gram Model</strong><br>运用中间词来预测上下文<br>定义与之前的CBOW基本相同，将x,y调换即可。<br><strong>步骤：</strong>  </p>
+<ol>
+<li>获得onehot vector<a href="http://www.codecogs.com/eqnedit.php?latex=x\in{R^{|V|&space;*&space;1}}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?x\in{R^{|V|&space;*&space;1}}" title="x\in{R^{|V| * 1}}"></a>  </li>
+<li>获得上下文的embedded word vectors <a href="http://www.codecogs.com/eqnedit.php?latex=v_c&space;=&space;Vx" target="_blank"><img src="http://latex.codecogs.com/gif.latex?v_c&space;=&space;Vx" title="v_c = Vx"></a>  </li>
+<li>不需要平均，<a href="http://www.codecogs.com/eqnedit.php?latex=\hat{v}&space;=&space;v_c" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\hat{v}&space;=&space;v_c" title="\hat{v} = v_c"></a>  </li>
+<li>生成2m个score vectors，<a href="http://www.codecogs.com/eqnedit.php?latex=u_{c-m},...,u_{c&plus;m}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?u_{c-m},...,u_{c&plus;m}" title="u_{c-m},...,u_{c+m}"></a> （不包括<a href="http://www.codecogs.com/eqnedit.php?latex=u_c" target="_blank"><img src="http://latex.codecogs.com/gif.latex?u_c" title="u_c"></a>)  </li>
+<li>将scores 利用softmax转化成概率 <a href="http://www.codecogs.com/eqnedit.php?latex=y&space;=&space;softmax(u)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?y&space;=&space;softmax(u)" title="y = softmax(u)"></a>  </li>
+<li>期望这个生成的概率向量能够跟标准输出的onehotvector 相同<br>同样采用交叉熵，然后定义优化目标，并利用贝叶斯假设，假设输出的词之间都是完全独立的：<br><img src="/images/J_skip.png" alt=""><br>对于这个目标函数，同样可以利用SGD的方法来更新未知参数。<br><strong>4. Negative Sampling</strong><br>对于之前的目标函数，每一次更新都需要O(|V|) 的时间复杂度，一个简单的想法就是估计他，而不是精确的求解。也就是利用已知的概率密度函数来估计未知的概率密度函数。<br>对于每个training step，不遍历整个词典，而是单纯的抽样出几个负样本。从一个对应着词频的噪声分布中<a href="http://www.codecogs.com/eqnedit.php?latex=(P_n(w))" target="_blank"><img src="http://latex.codecogs.com/gif.latex?(P_n(w))" title="(P_n(w))"></a>中采样。<br>将negative sampling应用在skip-gram model上，实际上就是优化一个不同的目标函数。<br>定义<a href="http://www.codecogs.com/eqnedit.php?latex=P(D&space;=&space;1|w,c)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?P(D&space;=&space;1|w,c)" title="P(D = 1|w,c)"></a>为(w,c)来自语料数据的概率，<a href="http://www.codecogs.com/eqnedit.php?latex=P(D&space;=&space;0|w,c)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?P(D&space;=&space;0|w,c)" title="P(D = 0|w,c)"></a>为不来自语料数据的概率。<br>定义：<br><a href="http://www.codecogs.com/eqnedit.php?latex=P(D&space;=&space;1|w,c,\theta)&space;=&space;\frac{1}{1&space;&plus;&space;exp(-v_c^{T}v_w)}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?P(D&space;=&space;1|w,c,\theta)&space;=&space;\frac{1}{1&space;&plus;&space;exp(-v_c^{T}v_w)}" title="P(D = 1|w,c,\theta) = \frac{1}{1 + exp(-v_c^{T}v_w)}"></a><br>目标在于最大化概率使其符合真实情况。并利用极大似然估计去估计<a href="http://www.codecogs.com/eqnedit.php?latex=\theta" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\theta" title="\theta"></a>：<br><img src="/images/theta.png" alt="theta"><br><a href="http://www.codecogs.com/eqnedit.php?latex=\hat{D}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\hat{D}" title="\hat{D}"></a>表示为错误的语料<br>可以随机的从word bank 中抽样来构成这个。<br>定义新的目标函数：<br><img src="/images/J_nega.png" alt="J"><br>在上式中<a href="http://www.codecogs.com/eqnedit.php?latex=\{\hat{u_k}|k=1...K\}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\{\hat{u_k}|k=1...K\}" title="\{\hat{u_k}|k=1...K\}"></a>是从<a href="http://www.codecogs.com/eqnedit.php?latex=P_u(w)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?P_u(w)" title="P_u(w)"></a>采样得来的。</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;对于lecture note1的总结与记录。有不对的地方还请大家指点：）&lt;br&gt;这个笔记主要包括：  &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;NLP的概念以及NLP面对的问题  &lt;/li&gt;
+&lt;li&gt;word vector的概念  &lt;/li&gt;
+&lt;li&gt;生成word vector 流行的方法   &lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+      <category term="ml_dl" scheme="http://yoursite.com/categories/ml-dl/"/>
+    
+    
+      <category term="ml_dl" scheme="http://yoursite.com/tags/ml-dl/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【三体】读书笔记</title>
+    <link href="http://yoursite.com/2016/08/15/santi-reading/"/>
+    <id>http://yoursite.com/2016/08/15/santi-reading/</id>
+    <published>2016-08-14T16:03:49.000Z</published>
+    <updated>2017-03-31T16:11:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>目前只看了前两部（看完了全部之后也许会再次更新），对于写这个读书笔记，我也只是向找一个地方表达自己的想法，阅读之后的感受（主要也是写给自己看的啦）。因为之前也几乎没有写过这些，所以可能写的看起来会很烂。就随便扯扯淡<br><a id="more"></a></p>
+<ul>
+<li>第一部开始讲的文革期间，对于人类社会的不满导致了希望通过更高阶的文明来帮住人类摆脱这一状况，之所以存在这样的感觉似乎是默认文明上升到更高层次的时候会存在着一种更加完善的道德。而这一切给人类社会带来了灾难，三体文明的生存环境十分恶劣，为了自身的生存，希望能够通过占领地球而得到更好的环境与发展。从而采取了一系列的举措，包括远航舰队，智子对人类的科技封锁等。这时人类陷入了恐慌，启动例如面笔计划之类的，希望能够在末日之战的时候获得最后生存的权利。</li>
+<li>第二部黑暗森林，讲述了主角在冬眠后醒来的故事，人类即将进入末日之战，科技在应用层面的发展使得人类产生了能够在末日之战胜利的错觉。而残酷的现实就是基础学科的研究仍然停留在两个世纪以前，看似科技在进步，可是理论的基础研究一直跟两个世纪以前一样。主人公和一部分冬眠者意识到了这样的问题。果然最后在探测器到达时，太空舰队几乎全军覆没。只幸存了几艘。而随后就发生了星际地球上黑暗战役这样的事情，而这一切包括三体文明的进攻都涉及到一个关键的问题，生存才是一切的基础。为了生存一切都很黑。</li>
+<li>个人感受与看法（随便乱说）：<ol>
+<li>经济与科技文明的水平，始终不能够代表一个普遍的道德水平。在社会上的各种群体中也能够得到一定的体现。</li>
+<li>生存是一切的基础，在我的基本的生存没有办法保证的时候，我没有办法去考虑道德层面的东西，在我的基本物质生活没有办法得到保证的时候，我没有办法选择其他的道路，只能够为了活下去奔波，而不可能去从事一些类似基础学科的研究。</li>
+<li>基础学科的理论研究表现了真正的水平，应用层面的研究看似丰富，看似百花齐放其实大部分归结到底都是一样的。就像现在deeplearning其实早在很久之前就提出过神经网络，而当时的计算能力达不到。cvpr 2016似乎大部分文章都是使用深度学习进行的，有人曾经说过这不能说不好，但也不能完全忽视其他方法的发展。  </li>
+</ol>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;目前只看了前两部（看完了全部之后也许会再次更新），对于写这个读书笔记，我也只是向找一个地方表达自己的想法，阅读之后的感受（主要也是写给自己看的啦）。因为之前也几乎没有写过这些，所以可能写的看起来会很烂。就随便扯扯淡&lt;br&gt;
+    
+    </summary>
+    
+      <category term="reading" scheme="http://yoursite.com/categories/reading/"/>
+    
+    
+      <category term="reading" scheme="http://yoursite.com/tags/reading/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ubuntu 16.04 升级中遇到的坑</title>
+    <link href="http://yoursite.com/2016/08/08/update-to-16-04/"/>
+    <id>http://yoursite.com/2016/08/08/update-to-16-04/</id>
+    <published>2016-08-08T15:07:57.000Z</published>
+    <updated>2017-03-31T16:11:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<h5 id="ubuntu-遇到-failed-to-start-load-kernel-modules-的解决办法"><a href="#ubuntu-遇到-failed-to-start-load-kernel-modules-的解决办法" class="headerlink" title="ubuntu 遇到 failed to start load kernel modules 的解决办法"></a>ubuntu 遇到 failed to start load kernel modules 的解决办法</h5><p>根据提示查看<br>显示loaded: loaded active: failed<br>根据字面意思就是不能够加载内核的模块<br>在外网上找到的解决方案 觉得很有道理啊<br>下面介绍方法，主要是自己小记录一下~<br><a id="more"></a><br>进入修复模式或者能够直接进入字符界面也可以<br>保证能够联网<br>这一步我又出错了，apt-get的时候提示错误，搜索得知dns可能有问题，修改完dns之后（方法网上都有），要记得<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo /etc/init.d/networking restart</div></pre></td></tr></table></figure></p>
+<p>确定可以联网之后<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">sudo apt-get update #获取最新的软件包列表</div><div class="line">sudo dpkg --configure -a #配置所有没有配置的软件包</div><div class="line">sudo apt-get dis-upgrade #会根据依赖关系更新包</div><div class="line">sudo apt-get -f install #修复依赖关系</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h5 id=&quot;ubuntu-遇到-failed-to-start-load-kernel-modules-的解决办法&quot;&gt;&lt;a href=&quot;#ubuntu-遇到-failed-to-start-load-kernel-modules-的解决办法&quot; class=&quot;headerlink&quot; title=&quot;ubuntu 遇到 failed to start load kernel modules 的解决办法&quot;&gt;&lt;/a&gt;ubuntu 遇到 failed to start load kernel modules 的解决办法&lt;/h5&gt;&lt;p&gt;根据提示查看&lt;br&gt;显示loaded: loaded active: failed&lt;br&gt;根据字面意思就是不能够加载内核的模块&lt;br&gt;在外网上找到的解决方案 觉得很有道理啊&lt;br&gt;下面介绍方法，主要是自己小记录一下~&lt;br&gt;
+    
+    </summary>
+    
+      <category term="tips" scheme="http://yoursite.com/categories/tips/"/>
+    
+    
+      <category term="tips" scheme="http://yoursite.com/tags/tips/"/>
+    
+  </entry>
+  
+</feed>

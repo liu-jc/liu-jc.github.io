@@ -1,0 +1,722 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.useso.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="liujc" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="note3主要介绍了神经网络的基本原理与一些技巧，都比较简单。以前看过写起来比较快，但是不排除我理解有错误或者说我写错了，所以如果发现有错误，希望指出并与我联系。Keyphrases:
+
+前向计算，后向传播
+Max-margin loss
+梯度检测以及参数初始化
+学习率和Adagrad">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cs224d-note3">
+<meta property="og:url" content="http://yoursite.com/2017/03/31/cs224d-note3/index.html">
+<meta property="og:site_name" content="liujc">
+<meta property="og:description" content="note3主要介绍了神经网络的基本原理与一些技巧，都比较简单。以前看过写起来比较快，但是不排除我理解有错误或者说我写错了，所以如果发现有错误，希望指出并与我联系。Keyphrases:
+
+前向计算，后向传播
+Max-margin loss
+梯度检测以及参数初始化
+学习率和Adagrad">
+<meta property="og:image" content="http://yoursite.com/images/14909331043266.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909338524658.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909339654416.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909341580955.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909367021587.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909371685191.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909469255545.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909480724842.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909642115056.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909657862801.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909660780243.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909665683626.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14909666223917.jpg">
+<meta property="og:updated_time" content="2017-03-31T16:51:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cs224d-note3">
+<meta name="twitter:description" content="note3主要介绍了神经网络的基本原理与一些技巧，都比较简单。以前看过写起来比较快，但是不排除我理解有错误或者说我写错了，所以如果发现有错误，希望指出并与我联系。Keyphrases:
+
+前向计算，后向传播
+Max-margin loss
+梯度检测以及参数初始化
+学习率和Adagrad">
+<meta name="twitter:image" content="http://yoursite.com/images/14909331043266.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/31/cs224d-note3/"/>
+
+  <title> cs224d-note3 | liujc </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">liujc</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                cs224d-note3
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-31T11:30:14+08:00" content="2017-03-31">
+              2017-03-31
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/31/cs224d-note3/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/31/cs224d-note3/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>note3主要介绍了神经网络的基本原理与一些技巧，都比较简单。以前看过写起来比较快，但是不排除我理解有错误或者说我写错了，所以如果发现有错误，希望指出并与我联系。<br>Keyphrases:</p>
+<ul>
+<li>前向计算，后向传播</li>
+<li>Max-margin loss</li>
+<li>梯度检测以及参数初始化</li>
+<li>学习率和Adagrad</li>
+</ul>
+<a id="more"></a>
+<h3 id="神经网路基础"><a href="#神经网路基础" class="headerlink" title="神经网路基础"></a>神经网路基础</h3><p>由于大量的数据是非线性可分的，所以需要非线性分类器，那么神经网络就是一组非线性分类器。</p>
+<ol>
+<li><p>一个神经元<br>单个计算单元将n维的向量 $x$ 作为输入，产生一个标量的输出 $a$，当然这个神经元同样与一个n维的权值向量$w$连接，以及一个偏移标量$b$。<br>假设我们使用了sigmoid 激活函数：<br>$$<br>f(z) = \frac1 {1 + exp(z)}<br>$$<br>神经元的输出可以表示为：<br>$$<br>a = \frac1 {1+exp(-w^Tx+b)}<br>$$<br>将偏移量和权值向量组合到一起可表示为：<br>$$<br>a = \frac1 {1+exp(-[w^T\quad b] \cdot [x\quad1]}<br>$$<br>下图直观的表示了这一过程<br><img src="/images/14909331043266.jpg" alt="">    </p>
+</li>
+<li><p>单层的网络<br>就是简单的将每个神经元叠加起来就好了。都比较简单。<br>假设这一层有m个神经元，前一层有n个神经元：<br><img src="/images/14909338524658.jpg" alt=""><br>定义符号，并都用矩阵和向量表示<br><img src="/images/14909339654416.jpg" alt=""><br>那么很容易知道激活前的值就是:<br>$$<br>z = Wx + b<br>$$<br>经过sigmoid激活函数之后：<br><img src="/images/14909341580955.jpg" alt=""></p>
+</li>
+<li><p>前向传播计算<br>输入向量$x \in R^n$,经过一层网络生成 $a \in R^m$<br>使用另一个矩阵$U \in R^{m*1}$来生成一个没有被标准化的值用于进行分类任务：<br>$$<br>s = U^Ta = U^Tf(Wx+b)<br>$$<br>直观来说假设我们4维的词向量以及window的大小为5，作为输入,那么$x \in R^{20}$。如果使用8个神经元，生成一个值，那么$W \in R^{8*20}$,$b \in R^8$, $U \in R^{8*1}$, $s \in R$。</p>
+</li>
+<li><p>最大间距目标函数<br>思想在于确保正样本的值高于负样本的值。<br>假设正样本的值为$s$,负样本的值为$s_c$<br>$s_c = U^Tf(Wx_c+b)$,$s = U^Tf(Wx+b)$<br>那么目标函数的就是希望去最大化$(s-s_c)$,或者说是最小化$(s_c-s)$。<br>如果$s_c-s&lt;0$，我们就不管认为这时候的代价为0，只计算负样本的值比正样本的值大的时候。所以修改目标为：<br>$$<br>minimize J = max(s_c-s,0)<br>$$<br>还可以修改一下，设定一个安全的边界$\Delta$，在$s - s_c &lt; \Delta$时计算，修改优化目标：<br>$$<br>minimize J = max(\Delta+s_c-s,0)<br>$$<br>可以取$\Delta = 1$，则：<br>$$<br>minimize J = max(1+s_c-s,0)<br>$$</p>
+</li>
+<li><p>后向传播<br>更新网络参数的关键在于求出$J$对每个参数的导数。利用链式法则进行。给出如下的网络图：<br><img src="/images/14909367021587.jpg" alt=""></p>
+</li>
+</ol>
+<p>可以用$W^{(2)} = U$来表示统一权值的符号<br>假设现在要对$W_{14}^{(1)}$进行更新，可以知道$w_{14}^{(1)}$只对$z^{(2)}_1$以及$a^{(2)}_1$有贡献，所以只受这两个的影响。可以先求出$j$对$s$的导数<br>$$<br>\frac{\partial J}{\partial s} = - \frac{\partial J}{\partial s_c} = -1<br>$$<br>那么接下来求$\frac{\partial s}{\partial W^{(1)}_{ij}}$：<img src="/images/14909371685191.jpg" alt=""></p>
+<p>令$\delta_i^{(2)} = W_i^{(2)}f’(z_i^{(2)})$<br>则可得 $\frac{\partial s}{\partial W_{ij}^{(1)}}= \delta_i \cdot a_j^{(i)}$</p>
+<p>根据上面的过程可以很容易的知道：<br>$$<br>\begin{split}<br>\frac{\partial s}{\partial {b_{i}^{(2)}}} &amp;= W_i^{(2)} \frac{\partial {a_i^{(2)}}} {\partial {z_i^{(2)}}} \frac{\partial {z_i^{(2)}}} {\partial {b_{i}^{(2)}}}\\<br>&amp;=W_i^{(2)}f’(z_i^{(2)})\\<br>&amp;=\delta_i^{(2)}<br>\end{split}<br>$$<br>lecture note上还提供了另一种解释，这里就不赘述了，有兴趣的可以看一下。</p>
+<p>将$\delta^{(k)}$推广到$\delta^{(k-1)}$：<br>直观的图片演示<br><img src="/images/14909469255545.jpg" alt=""></p>
+<p>链式求导，推导：<br>$$<br>\begin{split}<br>\delta_j^{(k-1)} &amp;= \frac{\partial s}{\partial z_j^{(k-1)}}\\<br>&amp;= \frac{\partial s}{\partial z^{(k)}} \frac{\partial z^{(k)}}{\partial z_j^{(k-1)}}\\<br>&amp;=  \frac{\partial s}{\partial z^{(k)}} \frac{\partial z^{(k)}}{\partial a_j^{(k-1)}}\frac{\partial a_j^{(k-1)}}{\partial z_j^{(k-1)}}\\<br>&amp;= \sum_i \frac{\partial s}{\partial z_i^{(k)}}\frac{\partial z_i^{(k)}}{\partial a_j^{(k-1)}}\frac{\partial a_j^{(k-1)}}{\partial z_j^{(k-1)}}\\<br>&amp;= f’(z_j^{(k-1)})\sum_i \delta_i^{(k)}W_{ij}^{(k-1)}<br>\end{split}<br>$$</p>
+<ol>
+<li>向量化后向传播的过程<br>因为<br>$$<br>\frac{\partial s}{\partial W_{ij}^{(k)}}= \delta_i^{(k+1)} \cdot a_j^{(k)}<br>$$</li>
+</ol>
+<p>所以$W^{(k)}$的导数为：<br><img src="/images/14909480724842.jpg" alt=""></p>
+<p>现在计算$\delta$的向量化传播：<br>$$<br>\delta_j^{(k)}= f’(z_j^{(k-1)})\sum_i \delta_i^{(k)}W_{ij}^{(k-1)}<br>$$<br>$$<br>\delta^{(k)} = f’(z^{(k)}) \circ (W^{(k)T}\delta^{(k+1)})<br>$$<br>($\circ$ 为元素按位相乘：$R^N \times R^N \rightarrow R^N$）</p>
+<p>在计算的时候$\delta^{(k)}$只取决于前一个$\delta^{(k+1)}$</p>
+<h3 id="Tips-amp-Tricks"><a href="#Tips-amp-Tricks" class="headerlink" title="Tips &amp; Tricks"></a>Tips &amp; Tricks</h3><ol>
+<li><p>梯度检查<br>利用一个数值方法估计梯度：<br>$f’(\theta) \approx \frac{J(theta^{(i+)} - J(\theta^{(i-)})}{2\varepsilon}$<br>其中 $\theta^{(i+)} = \theta + \varepsilon \times e_i$<br>利用这个数值估计跟反向传播得到的梯度进行比较，进行梯度检查，是否出错。</p>
+</li>
+<li><p>正则化<br>用来防止overfitting，利用$L_2$范数：<br>$$<br>J_R = J + \lambda\sum_{i=1}^L\left \lVert W^{(i)}\right \rVert_F<br>$$<br>其中 $\left \lVert W^{(i)} \right \rVert_F$ 为Frobenius norm<br>利用这样的正则项来惩罚权值过大，从而降低了分类器的灵活性降低了过拟合的风险。<br>要注意的是偏移量不需要被正则化，这里我的理解是如果限制偏移量，会限制灵活性，从而导致泛化能力变差吧？ 因为偏移量的作用就是让他离开0的位置，如果惩罚的话$\lambda$极度大的时候等于就没有了。（个人理解也不知道对不对）</p>
+</li>
+<li><p>激活函数（具体可以查，这里简单说一下个别）</p>
+<ul>
+<li>sigmoid</li>
+<li>Tanh</li>
+<li>Hard tanh</li>
+<li>Soft sign<br>  $\text{softsign}(z) = \frac{z}{1 + |z|}$<br>  这里我感觉lecture note 里面导数推错了，我认为是这样的:<br>  $\text{softsign}’(z) = \frac{1}{(1+sgn(z)*z)^2}$<br>  其中$sgn$ 为$\pm1$取决于$z$的符号</li>
+<li><p>ReLU(很常用，并且好像有文章对比过收敛会快点）<br>  $$<br>  rect(z) = max(z,0)<br>  $$</p>
+<p>  $$<br>  \begin{equation*}<br>  rect’(z)=<br>  \begin{cases}<br>  1,&amp; \mbox{if $z&gt;0$ }\\<br>  0,&amp; otherwise\\<br>  \end{cases}<br>  \end{equation*}<br>  $$</p>
+</li>
+<li>Leaky ReLu</li>
+</ul>
+</li>
+<li><p>Xavier参数初始化<br> 对于sigmoid 和 tanh的激活单元，当$W \in R^{n^{(l+1)} \times n^{(l)}}$时以这样的方式进行初始化的话，可以获得更快的收敛速度和更小的错误率：<br> <img src="/images/14909642115056.jpg" alt=""><br>对于偏移量的话初始化为0</p>
+</li>
+<li><p>学习率</p>
+</li>
+</ol>
+<p>固定的学习率$\alpha$，不能设置太大<br><img src="/images/14909657862801.jpg" alt=""><br>还有一种方法是让学习率随着迭代次数下降：<br><img src="/images/14909660780243.jpg" alt=""></p>
+<p>其中$a_0$是一个可调的参数表示初始的学习率，$\tau$也是可调的参数表示学习率开始下降的时间</p>
+<ol>
+<li>自动调节学习率的方法，Adagrad<br> 可以使得每个参数的学习率都不同，取决于历史的更新，越少进行更新的参数采用的学习率大于那些更新频繁的参数。<br> 具体如下：<br> <img src="/images/14909665683626.jpg" alt=""><br> 简单实现如下：<br> <img src="/images/14909666223917.jpg" alt=""></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/21/cs224d-note2/" rel="next" title="cs224d_note2">
+                <i class="fa fa-chevron-left"></i> cs224d_note2
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/31/cs224d-note3/"
+           data-title="cs224d-note3" data-url="http://yoursite.com/2017/03/31/cs224d-note3/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="liujc" />
+          <p class="site-author-name" itemprop="name">liujc</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/liu-jc" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#神经网路基础"><span class="nav-number">1.</span> <span class="nav-text">神经网路基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tips-amp-Tricks"><span class="nav-number">2.</span> <span class="nav-text">Tips & Tricks</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liujc</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"liu-jc"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
