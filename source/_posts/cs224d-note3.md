@@ -1,7 +1,8 @@
 ---
 title: cs224d-note3
 date: 2017-03-31 11:30:14
-tags:
+tags: ml_dl
+categories: ml_dl
 ---
 note3主要介绍了神经网络的基本原理与一些技巧，都比较简单。以前看过写起来比较快，但是不排除我理解有错误或者说我写错了，所以如果发现有错误，希望指出并与我联系。 
 Keyphrases:
