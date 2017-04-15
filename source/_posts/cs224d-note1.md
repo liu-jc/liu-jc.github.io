@@ -106,3 +106,4 @@ X 保存词共同出现的次数，对于每个词计算在特定大小的window
 ![J](/images/J_nega.png)  
 在上式中<a href="http://www.codecogs.com/eqnedit.php?latex=\{\hat{u_k}|k=1...K\}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\{\hat{u_k}|k=1...K\}" title="\{\hat{u_k}|k=1...K\}" /></a>是从<a href="http://www.codecogs.com/eqnedit.php?latex=P_u(w)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?P_u(w)" title="P_u(w)" /></a>采样得来的。
 
+
