@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-04-15T14:16:32.000Z</updated>
+  <updated>2017-05-01T09:19:56.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,379 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>论文笔记Ask Me Anything</title>
+    <link href="http://yoursite.com/2017/04/23/Ask_me_anything_note/"/>
+    <id>http://yoursite.com/2017/04/23/Ask_me_anything_note/</id>
+    <published>2017-04-22T16:00:00.000Z</published>
+    <updated>2017-05-01T09:19:56.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>论文为Ask Me Anything: Free-form Visual Question Answering Based on Knowledge from External Sources<br>这篇文章新的model结合通用知识库来解决更加复杂的VQA的问题。<br>总结自己对这篇文章的理解以及疑惑的地方，可能不太到位，欢迎指教。<br><a id="more"></a> </p>
+<h3 id="Ask-Me-Anything-Free-form-Visual-Question-Answering-Based-on-Knowledge-from-External-Sources"><a href="#Ask-Me-Anything-Free-form-Visual-Question-Answering-Based-on-Knowledge-from-External-Sources" class="headerlink" title="Ask Me Anything: Free-form Visual Question Answering Based on Knowledge from External Sources"></a>Ask Me Anything: Free-form Visual Question Answering Based on Knowledge from External Sources</h3><ul>
+<li>主要贡献以及解决的问题： <ul>
+<li>新的解决VQA的方法，结合了图片问题的信息和通用知识库，来回答更加复杂的VQA问题</li>
+</ul>
+</li>
+<li>之前的方法以及缺陷： <ul>
+<li>利用CNN、LSTM 分别获取图片和文本的信息，但是更加复杂的问题需要的信息可能没有出现在图片那种，可能是常识或者是特定的只是。</li>
+</ul>
+</li>
+<li>大致流程： <ul>
+<li>利用图片问题对，来预测图片的一系列属性，同时基于这些属性来生成摘要。</li>
+<li>使用一些属性来生成查询，应用在Resource Description Framework 的知识库上。从KB中获取了段落，编码。</li>
+<li>编码特征和摘要和知识库的信息输入LSTM训练</li>
+</ul>
+</li>
+<li><p>抽取，编码和合并<br>  模型图如下：<br><img src="/images/14922458429919.jpg" alt=""></p>
+<ul>
+<li>基于属性的图片表达：<br>  作为一个多标签的分类任务，一个共享的CNN与每个proposal 连接，最后利用max pooling 来做最后的预测。<br>  初始化的模型利用VggNet，shared CNN 在multi-label上调整过，最后一层全连接输入softmax求$c$种分类标签，$c$表示的是特征的字典大小。<br>  最后使用Multiscale Combinatorial Grouping(MCG) (<strong>Multiscale Combinatorial Grouping for Image Segmentation and Object Proposal ,Generation (待细读原文）</strong>)来进行proposal 的生成，最后应用max-pooling 来将所有输出整合到一个预测向量$V_{att}(I)$中。</li>
+<li>基于说明的图片表达：<br>  将高层次基于属性的表达喂入LSTM来生成说明，就意味着将上一步中的$V_{att}(I)$作为这一步的输入。<br>  利用这样的方法来生成5个不同的说明(<strong>using beam search</strong>)来组成一个内在的文本表达。<br>  caption-LSTM的隐层向量在生成完每个说明之后都用来表达这个说明的内容。(<strong>有没有可能生成的某两个说明刚好一样？如何处理?</strong>) 最后使用平均池化将5个隐层向量来获取一个512维的$V_{cap}(I)$<br>  caption-LSTM是在MS COCO训练集上人类生成的说明上训练的。</li>
+<li>Knowledge Base<br>  使用DBpedia来作为外部知识来源。<br>  利用top-5 的 属性来生成查询。利用KB+SPARQL来进行查询。<br>  查询返回的是一段文字，利用Doc2Vec来提取出他的语义信息。<br>  训练利用的是DBpedia中的10000个文档来训练一个向量维度为500的模型。<br>  在进行Doc2Vec之前将5个返回的段落简单的拼接成一个大的段落，之后在利用Doc2Vec抽取信息。</li>
+</ul>
+</li>
+<li>模型：<br>  通过最大化正确答案的概率来训练<br>  令：$Q = {q_1,…,q_n}$，$Q$表示问题中单词的序列,$n$表示问题的长度<br>  $A = {a_1,…,a_l}$，$A$表示答案中单词的序列,$l$表示答案的长度<br>  对数似然可以写成下面的形式：<br>  $$<br>  \text{log} p(A|I,Q) = \sum_{t=1}^{l}\text{log} p(a_t|a_{1:t-1},I,Q)<br>  $$<br>  其中$p(a_t|a_{1:t-1},I,Q)$表示的是给定图片和问题以及之前的答案单词，生成$a_t$的概率是多少。<br>  使用LSTM来编码图片和问题信息，同时用LSTM解码生成答案。解码和编码的LSTM共用权值。<br>  训练的时候将问题和答案拼接起来就可以了，${q_1,…,q_n,a_1,..,a_{l+1}}$，$a_{l+1}$是END符号。<br>  损失函数：<br>  <img src="/images/14922482094349.jpg" alt=""><br>  其中$p_t(a_t^{(i)}$表示对于第$i$个输入softmax层的激活值，$\theta$表示模型的参数。</li>
+<li>实验<br>  数据集特点：<br>  <img src="/images/14922486892154.jpg" alt=""><ul>
+<li>COCO-QA中的结果： <ul>
+<li>评价方法：<ol>
+<li>Acc</li>
+<li>WuPalmer similarity(WUPS)@0.9</li>
+<li>WuPalmer similarity(WUPS)@0.0<br><img src="/images/14922574164321.jpg" alt=""></li>
+</ol>
+</li>
+</ul>
+</li>
+<li>VQA中的结果： <ul>
+<li>评价方法与VQA原论文中一样:<br>$$<br>min(\frac{\text{ # humans that provided that answer}}{3},1)<br>$$<br><img src="/images/14922576813542.jpg" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;论文为Ask Me Anything: Free-form Visual Question Answering Based on Knowledge from External Sources&lt;br&gt;这篇文章新的model结合通用知识库来解决更加复杂的VQA的问题。&lt;br&gt;总结自己对这篇文章的理解以及疑惑的地方，可能不太到位，欢迎指教。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="paper_note" scheme="http://yoursite.com/categories/paper-note/"/>
+    
+    
+      <category term="paper_note" scheme="http://yoursite.com/tags/paper-note/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>论文笔记Making the V in VQA matter</title>
+    <link href="http://yoursite.com/2017/04/21/Making_the_V_note/"/>
+    <id>http://yoursite.com/2017/04/21/Making_the_V_note/</id>
+    <published>2017-04-20T16:00:00.000Z</published>
+    <updated>2017-05-01T08:46:20.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>论文为Making the V in VQA matter<br>这篇文章平衡了之前的真实场景数据集，提出了一个可解释的模型。<br>总结自己对这篇文章的理解，可能不太到位，欢迎指教。<br><a id="more"></a> </p>
+<h3 id="Making-the-V-in-VQA-matter"><a href="#Making-the-V-in-VQA-matter" class="headerlink" title="Making the V in VQA matter:"></a>Making the V in VQA matter:</h3><ul>
+<li>主要的贡献以及解决的问题：   <ul>
+<li>平衡了VQA的数据集（真实场景下），希望消除模型中语言的倾向，同时提高图片的作用。</li>
+<li>评估了最好的几个VQA模型在平衡数据集上的表现</li>
+<li>提出了一个新的可解释的模型，能够给出反例（同一个问题下不同答案的与原图片相似的图片）</li>
+</ul>
+</li>
+<li>任务定义： <ol>
+<li>回答问题： <ul>
+<li>输入： 图片，问题</li>
+<li>输出： 答案</li>
+</ul>
+</li>
+<li>解释：<ul>
+<li>输入： 图片，问题，需要解释的答案</li>
+<li>图片： 与原图片相似的，但答案不一样的图片</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>数据集：   <ul>
+<li>利用原VQA的数据集作为不平衡的数据集</li>
+<li>同时人工的改进原VQA的数据集，使得其更加平衡，其方法与Yin and Yang 那篇类似。</li>
+</ul>
+</li>
+<li>测试已有的模型以及baselines：<ul>
+<li>模型： <ul>
+<li>Deeper LSTM Question + norm Image：与原始论文VQA：visual question answering 中的方法一样</li>
+<li>Hierarchical Co-attention（HieCoAtt)：对语言的编码采用分层的形式，分别在word-level，phrase-level，entire question-level 上进行编码，最后组合起来。<strong>（待细读原论文）</strong>        * Multimodal Compact Bilinear Pooling（MCB）：采用Multimodal Compact Bilinear Pooling的机制。 <strong>（待细读原论文）</strong></li>
+</ul>
+</li>
+<li>baselines：（都与Yin and Yang 那篇一样，不赘述了）<ul>
+<li>prior</li>
+<li>language-only</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>对比平衡和不平衡的数据集：<br>  <img src="/images/14920775194879.jpg" alt=""><br>  会发现确实可以体现语言的偏差，用不平衡的数据训练的效果在平衡数据集中测试能够发现明显不好。</li>
+<li>反例的解释：<br>  提出一个模型，不仅只回答问题，同时还给出一张与原图片相似的，但答案又不一样的图片。举例，给一张图片，问题：这个消防栓什么颜色？答：红色。同时输出一张图片与原图相似，但答案不是红色。</li>
+<li>模型：<br>  在之前构造数据集的时候，是通过给定图片$I$,问题$Q$，人工选择答案不同的图片$I’$来作为补充数据。那么此时就可以利用$I’$来进行有监督的学习，选取与$I$最相近的24个图片的集合$I_{NN}$（利用VGGNet的倒数第二层的激活值，用L2距离计算邻近程度），学习$I’$在其中的位置。$I’$是人工选择的，机器只负责提供$I_{24}这24张图片$<ul>
+<li>回答的训练：<ul>
+<li>输入： $I,Q,A$，表示图片，问题，答案</li>
+</ul>
+</li>
+<li>训练的训练<ul>
+<li>输入： $Q,A$，表示问题，答案。$I’$反例图片，$I_{NN}(I’ \in I_{NN}）$</li>
+</ul>
+</li>
+<li>模型的结构：<ul>
+<li>共享的部分：<br>  学习图片和问题的表达，使用CNN embedding 作为一个分支表达image，LSTM embedding 作为另一个分支表达问题，最后融合。（注意这里的图片需要传入25个，$I$和$I_{NN}$</li>
+<li>回答部分：<br>  与原始的方法一样，接MLP，再用softmax预测，将cross-entropy loss 作为损失函数</li>
+<li>解释部分：<br>  利用$QI$的embedding，和需要解释的$A$，来训练计算这两个的内积来获取每个图片的一个标量值，这K个标量值通过一个全连接层来获取K个$S(I_i)$，越小表示越不可能是好的反例。<br>  利用hinge ranking losses来鼓励$S(I’) - S(I_i) &gt; M - \epsilon， I_i \in {I_1,…,I_k} \backslash {I’}$,等于最小化下面这个表达式：<br>  $$<br>  max(0,M-(S(I’)-S(I_i)))<br>  $$<br>  将两个损失结合起来可以得到：<br>  $$<br>  L = -logP(A|I,Q) + \lambda \sum_imax(0,M - (S(I’) - S(I_i)))<br>  $$<br>  其中，$P(A|I,Q) = \frac{e^{f_A}}{\sum_je^{f_j}}$，$f_A$表示softmax中$A$的那个神经元的输出</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>解释模型的baseline，以及对比：<ul>
+<li>random： 在$I_{NN}$中随机选一个</li>
+<li>distance： 在$I_{NN}$中选最相似的一个</li>
+<li>VQA model： 在$I_{NN}$中$P(A|Q,I_i)$最小的，也就是最不可能为A的一张图片<br>选用top 5 来作为评判<br><img src="/images/14920799546282.jpg" alt=""></li>
+</ul>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;论文为Making the V in VQA matter&lt;br&gt;这篇文章平衡了之前的真实场景数据集，提出了一个可解释的模型。&lt;br&gt;总结自己对这篇文章的理解，可能不太到位，欢迎指教。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="paper_note" scheme="http://yoursite.com/categories/paper-note/"/>
+    
+    
+      <category term="paper_note" scheme="http://yoursite.com/tags/paper-note/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>论文笔记Yin and Yang</title>
+    <link href="http://yoursite.com/2017/04/19/Yin_Yang_note/"/>
+    <id>http://yoursite.com/2017/04/19/Yin_Yang_note/</id>
+    <published>2017-04-18T16:00:00.000Z</published>
+    <updated>2017-05-01T08:45:50.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>论文为Yin and Yang: Balancing and Answering Binary Visual Questions<br>这篇文章平衡了之前的抽象场景数据集，为了消除语言特征上的偏好，从而更注重于学习视觉信号的细微变化，并且仅关注yes/no问题，关注语义上的推理。<br>总结自己对这篇文章的理解，可能不太到位，欢迎指教。<br><a id="more"></a> </p>
+<h3 id="Yin-and-Yang-Balancing-and-Answering-Binary-Visual-Questions"><a href="#Yin-and-Yang-Balancing-and-Answering-Binary-Visual-Questions" class="headerlink" title="Yin and Yang: Balancing and Answering Binary Visual Questions"></a>Yin and Yang: Balancing and Answering Binary Visual Questions</h3><ul>
+<li>主要的贡献以及解决的问题： <ul>
+<li>平衡VQA的抽象场景数据集</li>
+<li>在抽象场景中，将yes/no的问题转化成一个tuple，并回答</li>
+<li>利用抽象的场景能够更好的关注于high-level的语义推理</li>
+</ul>
+</li>
+<li>任务的定义：   <ul>
+<li>输入：一个抽象场景的图片，一个三元组  </li>
+<li>输出：回答在这个抽象场景中这个三元组是否存在</li>
+</ul>
+</li>
+<li>数据集： <ul>
+<li>利用VQA abstract dataset 作为不平衡的数据集</li>
+<li>平衡abstract binary VQA dataset：  <ul>
+<li>通过尽可能少的修改场景来使同一个问题的答案转变到另一个方向，这样来获取互补的场景。</li>
+<li>尽可能少的修改是为了让模型更够学习的到视觉信号中微小的区别，更好的回答问题。</li>
+<li>注意数据集不是完全平衡的。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>方法：   <ul>
+<li>步骤：<ol>
+<li>将question 转换成 tuple</li>
+<li>判断这个tuple是否在图片中</li>
+</ol>
+</li>
+<li>tuple extraction<ul>
+<li>parsing：<br>  standford parser</li>
+<li>summarizing： <ol>
+<li>去除stop words</li>
+<li>去除 nominal subject 和 passive nominal subject 之前的单词<br>获取问题的summary</li>
+</ol>
+</li>
+<li>extracting tuple：<br>  将summary，用the Hunpos Part of Speech（POS） tagger</li>
+</ul>
+</li>
+<li>将不同物体与P 和 S对齐  <ul>
+<li>计算物体和词之间的mutual information </li>
+<li>在测试中，选择和P之间有最大的mutual information的物体，如果超过一个，就随机选一个</li>
+</ul>
+</li>
+<li>visual verification<br>  集成Q-model和Tuple-modle，使用同样的图片特征，不同的语言特征<ul>
+<li>Q-model：<br>  将问题的自然序列喂进LSTM，使用隐层来作为language embedding</li>
+<li>Tuple-model：<br>  使用P，R，S的word2vec embedding的连接来作为language features</li>
+<li>visual features：<br>  总共有1432维的向量，表示每个场景的特征向量<ul>
+<li>P object 和 S object 分别有 563维，编码物体类别，以及绝对地址（用GMMs建模）等</li>
+<li>48维的P，S之间的相对地址</li>
+<li>258维编码P、S周围的物体<br>最后将语言和视觉的表达用point-wise multiplied 融合起来，在传个一个MLP，最后用softmax进行分类</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>实验： <ul>
+<li>baselines:<ol>
+<li>prior： 用最常用的答案直接回答</li>
+<li>Blind-Q+Tuple： 忽视视觉信息</li>
+<li>SOTA Q+Tuple+H-IMG： 图片的特征使用的是整体的特征。</li>
+</ol>
+</li>
+<li>在不平衡的数据集上测试：<ol>
+<li>视觉信息的帮助</li>
+<li>关注特定的区域是重要的</li>
+<li>对于语言有偏好</li>
+</ol>
+</li>
+<li>在平衡的数据集上测试： <ol>
+<li>在平衡的数据集上训练更好</li>
+<li>关注特定的区域更好</li>
+<li>平衡数据集能够消除语言的偏好，并且能够训练更好的理解场景中的细节</li>
+<li>划分一对互补的场景：<br> 输入一对互补场景和对应的问题，只有都回答正确，这个测试样例才算正确。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;论文为Yin and Yang: Balancing and Answering Binary Visual Questions&lt;br&gt;这篇文章平衡了之前的抽象场景数据集，为了消除语言特征上的偏好，从而更注重于学习视觉信号的细微变化，并且仅关注yes/no问题，关注语义上的推理。&lt;br&gt;总结自己对这篇文章的理解，可能不太到位，欢迎指教。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="paper_note" scheme="http://yoursite.com/categories/paper-note/"/>
+    
+    
+      <category term="paper_note" scheme="http://yoursite.com/tags/paper-note/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>论文笔记VQA</title>
+    <link href="http://yoursite.com/2017/04/17/VQA_note/"/>
+    <id>http://yoursite.com/2017/04/17/VQA_note/</id>
+    <published>2017-04-16T16:00:00.000Z</published>
+    <updated>2017-05-01T09:17:38.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>论文为VQA: Visual Question Answering<br>这篇文章创建了一个之后广泛使用的VQA数据集以及一种end-to-end的模型来解决VQA问题<br>总结自己对这篇文章的理解，可能不太到位，欢迎指教。<br><a id="more"></a> </p>
+<h3 id="VQA-Visual-Question-Answering"><a href="#VQA-Visual-Question-Answering" class="headerlink" title="VQA: Visual Question Answering"></a>VQA: Visual Question Answering</h3><ul>
+<li>任务形式：   <ul>
+<li>输入：一幅图片，一个开放式的自然语言问题</li>
+<li>输出：自然语言的答案</li>
+<li>任务类型： 包括开放式的回答任务和多选择的任务</li>
+<li>要回答问题需要在视觉理解场景的基础上，加入常识性的知识</li>
+</ul>
+</li>
+<li>应用场景： <ul>
+<li>给视觉障碍者提供便利</li>
+</ul>
+</li>
+<li>数据集的构建<br>  利用真实图片和抽象的场景来收集问题，以及答案的收集<ul>
+<li>真实图片：<br>  MS COCO数据集，包括了多种物体以及丰富的上下文信息。</li>
+<li>抽象场景：<br>  期望能够探索VQA所需要的高级的推理，而不只是低级的视觉任务</li>
+<li>划分数据集： <ul>
+<li>真实图片：根据MC COCO一样划分</li>
+<li>抽象场景： 20K/10K/20K ，train/val/test</li>
+</ul>
+</li>
+<li>说明文字： <ul>
+<li>真实图片： 利用每个图片自带的五个caption</li>
+<li>抽象场景： 使用跟COCO一样的UI获取五个caption</li>
+</ul>
+</li>
+<li>问题：   <ul>
+<li>问题需要关于这个场景的常识性知识</li>
+<li>避免那种不依赖图片就可以回答的问题</li>
+</ul>
+</li>
+<li>回答：  <ul>
+<li>每个问题十个答案来自不同的人</li>
+<li>简短的词汇而非句子，避免主观内容    </li>
+<li>开放答案的回答：<br>  使用这样的公式测量准确性<br>  $$<br>  min(\frac{\text{ # humans that provided that answer}}{3},1)<br>  $$<br>  对于每个开放答案的问题，不只有对错两种可能,可能是部分对。</li>
+<li>多选择的任务：<br>  生成十八个候选答案，有四种类型的答案<ol>
+<li>正确的： 最普遍的正确答案</li>
+<li>似乎可行的： 不看图片，找三个主题回答问题</li>
+<li>流行的： 所有问题中最流行的10个答案，为了让算法不容易由候选答案集合推断出问题的种类</li>
+<li>随机的： 数据集中随机的问题的正确答案<br>候选答案的顺序是随机的</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>数据集分析： <ul>
+<li>问题： <ul>
+<li>问题类型</li>
+<li>问题的长度</li>
+</ul>
+</li>
+<li>答案：<br>  测试的时候是直接做的string matching，未考虑同义词等信息<ul>
+<li>典型的答案</li>
+<li>答案长度</li>
+<li>人对自身答案的自信程度</li>
+<li>人之间对答案的共识程度</li>
+</ul>
+</li>
+<li>常识性知识<ul>
+<li>是否不需要图片就可以回答这个问题：<br>  将包含图片和不包含图片的人类回答正确率做一个对比</li>
+<li>在回答中常识性知识是否必要：<br>  2 AMT studies针对回答的人<ol>
+<li>是否需要常识性知识</li>
+<li>最小可以回答问题的年龄群体</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>caption &amp; question：<br>  分析是否只需要caption和question就能够回答好问题，而不需要图片。<br>  <img src="/images/14918758014993.jpg" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>baseline &amp; method</p>
+<ul>
+<li>baseline <ul>
+<li>随机回答： top 1k的答案中随机抽（0.12%）</li>
+<li>总是回答yes： 29.72%</li>
+<li>选择问题类型中最流行的答案： 36.18%</li>
+<li>最近邻的方法选取答案： 在K近邻的问题中选取最流行的答案</li>
+</ul>
+</li>
+<li><p>method</p>
+<ul>
+<li>image：<br>  利用VGGnet的最后一个隐层</li>
+<li>问题： <ul>
+<li>BoW 的表示</li>
+<li>word2vec 的表示</li>
+</ul>
+</li>
+<li><p>caption</p>
+<ul>
+<li>BoW 的表示 1000维 </li>
+</ul>
+<p>最后将VGGnet和LSTM做一个融合（使用按位相乘），然后输出到一个MLP中，最后用softmax生成。<br><img src="/images/14918897383443.jpg" alt=""></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;论文为VQA: Visual Question Answering&lt;br&gt;这篇文章创建了一个之后广泛使用的VQA数据集以及一种end-to-end的模型来解决VQA问题&lt;br&gt;总结自己对这篇文章的理解，可能不太到位，欢迎指教。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="paper_note" scheme="http://yoursite.com/categories/paper-note/"/>
+    
+    
+      <category term="paper_note" scheme="http://yoursite.com/tags/paper-note/"/>
+    
+  </entry>
   
   <entry>
     <title>path ranking algorithm</title>

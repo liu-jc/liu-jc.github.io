@@ -89,28 +89,19 @@
 
 
 
-<meta name="description" content="论文为A Discriminative Predicate Path Mining Approach总结自己对这篇文章的理解，可能不太到位，并且有的点自己也存在困惑，由于时间关系等，暂时无法深究。欢迎指教。">
+<meta name="description" content="论文为Making the V in VQA matter这篇文章平衡了之前的真实场景数据集，提出了一个可解释的模型。总结自己对这篇文章的理解，可能不太到位，欢迎指教。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="论文笔记DPP_2015">
-<meta property="og:url" content="http://yoursite.com/2017/04/07/DPP_2015_note/index.html">
+<meta property="og:title" content="论文笔记Making the V in VQA matter">
+<meta property="og:url" content="http://yoursite.com/2017/04/21/Making_the_V_note/index.html">
 <meta property="og:site_name" content="liujc">
-<meta property="og:description" content="论文为A Discriminative Predicate Path Mining Approach总结自己对这篇文章的理解，可能不太到位，并且有的点自己也存在困惑，由于时间关系等，暂时无法深究。欢迎指教。">
-<meta property="og:image" content="http://yoursite.com/images/14912142937359.jpg">
-<meta property="og:image" content="http://yoursite.com/images/14912143192104.jpg">
-<meta property="og:image" content="http://yoursite.com/images/14912143584163.jpg">
-<meta property="og:image" content="http://yoursite.com/images/14912144282286.jpg">
-<meta property="og:image" content="http://yoursite.com/images/14912146707486.jpg">
-<meta property="og:image" content="http://yoursite.com/images/14912158017090.jpg">
-<meta property="og:image" content="http://yoursite.com/images/14912158155574.jpg">
-<meta property="og:image" content="http://yoursite.com/images/14912162745624.jpg">
-<meta property="og:image" content="http://yoursite.com/images/14912163763921.jpg">
-<meta property="og:image" content="http://yoursite.com/images/14912168882944.jpg">
-<meta property="og:image" content="http://yoursite.com/images/14912174451881.jpg">
-<meta property="og:updated_time" content="2017-04-15T14:16:39.000Z">
+<meta property="og:description" content="论文为Making the V in VQA matter这篇文章平衡了之前的真实场景数据集，提出了一个可解释的模型。总结自己对这篇文章的理解，可能不太到位，欢迎指教。">
+<meta property="og:image" content="http://yoursite.com/images/14920775194879.jpg">
+<meta property="og:image" content="http://yoursite.com/images/14920799546282.jpg">
+<meta property="og:updated_time" content="2017-05-01T08:46:20.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="论文笔记DPP_2015">
-<meta name="twitter:description" content="论文为A Discriminative Predicate Path Mining Approach总结自己对这篇文章的理解，可能不太到位，并且有的点自己也存在困惑，由于时间关系等，暂时无法深究。欢迎指教。">
-<meta name="twitter:image" content="http://yoursite.com/images/14912142937359.jpg">
+<meta name="twitter:title" content="论文笔记Making the V in VQA matter">
+<meta name="twitter:description" content="论文为Making the V in VQA matter这篇文章平衡了之前的真实场景数据集，提出了一个可解释的模型。总结自己对这篇文章的理解，可能不太到位，欢迎指教。">
+<meta name="twitter:image" content="http://yoursite.com/images/14920775194879.jpg">
 
 
 
@@ -138,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/04/07/DPP_2015_note/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/04/21/Making_the_V_note/"/>
 
 
 
 
 
-  <title> 论文笔记DPP_2015 | liujc </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title> 论文笔记Making the V in VQA matter | liujc </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -273,7 +264,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/07/DPP_2015_note/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/21/Making_the_V_note/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="liujc">
@@ -294,7 +285,7 @@
             
             
               
-                论文笔记DPP_2015
+                论文笔记Making the V in VQA matter
               
             
           </h1>
@@ -309,8 +300,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-07T00:00:00+08:00">
-                2017-04-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-21T00:00:00+08:00">
+                2017-04-21
               </time>
             
 
@@ -350,7 +341,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/04/07/DPP_2015_note/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2017/04/21/Making_the_V_note/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -377,40 +368,69 @@
       
 
       
-        <p>论文为A Discriminative Predicate Path Mining Approach<br>总结自己对这篇文章的理解，可能不太到位，并且有的点自己也存在困惑，由于时间关系等，暂时无法深究。欢迎指教。<br><a id="more"></a> </p>
-<h3 id="A-Discriminative-Predicate-Path-Mining-Approach"><a href="#A-Discriminative-Predicate-Path-Mining-Approach" class="headerlink" title="A Discriminative Predicate Path Mining Approach"></a>A Discriminative Predicate Path Mining Approach</h3><ul>
-<li>解决的问题：<br>  fact checking, 判断这样的三元组是否成立，(subject, predicate, object)，其中subject,object 是实体，predicate是一种关系。例如： “Springfield is the capital of Illinois“，可以表示成（Springfield, capitalOf, Illionis).</li>
-<li>之前的方法以及缺陷： <ul>
-<li>association rule mining:<br>  找全局的规则和同一侧，而不是去生成一种健壮的对于依赖上下文的断言的理解。</li>
-<li>meta path mining works:<br>  人类必须理解这个领域并且在分析开始之前写下相关的meta paths</li>
+        <p>论文为Making the V in VQA matter<br>这篇文章平衡了之前的真实场景数据集，提出了一个可解释的模型。<br>总结自己对这篇文章的理解，可能不太到位，欢迎指教。<br><a id="more"></a> </p>
+<h3 id="Making-the-V-in-VQA-matter"><a href="#Making-the-V-in-VQA-matter" class="headerlink" title="Making the V in VQA matter:"></a>Making the V in VQA matter:</h3><ul>
+<li>主要的贡献以及解决的问题：   <ul>
+<li>平衡了VQA的数据集（真实场景下），希望消除模型中语言的倾向，同时提高图片的作用。</li>
+<li>评估了最好的几个VQA模型在平衡数据集上的表现</li>
+<li>提出了一个新的可解释的模型，能够给出反例（同一个问题下不同答案的与原图片相似的图片）</li>
 </ul>
 </li>
-<li>文章的贡献：<br>  找出一种方法自动的确定一个路径集合，这个集合可以唯一的概括两个实体之间的关系。<ol>
-<li>discriminative path mining algorithm，能够发现RDF-style 三元组的定义，例如a statement of fact。</li>
-<li>可解释的 fact checking framework，利用之前的discriminative paths 来预测真假</li>
-<li>将fact checking 建模成一个link prediction的问题 同时在两个大型的知识图谱上验证。</li>
-</ol>
+<li>任务定义： <ol>
+<li>回答问题： <ul>
+<li>输入： 图片，问题</li>
+<li>输出： 答案</li>
+</ul>
 </li>
-<li><p>问题的定义</p>
-<ol>
-<li>knowledge graph<br><img src="/images/14912142937359.jpg" alt=""><br>节点的标签类型可以不唯一，如果唯一的话则为heterogeneous information network (HIN) </li>
-<li>meta path<br><img src="/images/14912143192104.jpg" alt=""></li>
-<li>Anchored Predicate Path<br><img src="/images/14912143584163.jpg" alt=""></li>
-<li><p>Discriminative Paths<br><img src="/images/14912144282286.jpg" alt=""></p>
-</li>
-<li><p>fact checking<br><img src="/images/14912146707486.jpg" alt=""><br>$T^+,T^-$表示正负样本点对</p>
+<li>解释：<ul>
+<li>输入： 图片，问题，需要解释的答案</li>
+<li>图片： 与原图片相似的，但答案不一样的图片</li>
+</ul>
 </li>
 </ol>
 </li>
-<li><p>DISCRIMINATIVE PATH ANALYSIS<br>  三个阶段1）提取， 2）选择， 3）验证</p>
-<ol>
-<li>路径提取<br> <img src="/images/14912158017090.jpg" alt=""><br> <font color="red">有点没理解，用DFS求$P^-$?怎么求出来的？在图中$u,v$可能相互可达但不存在p的关系，但是有可能不可达吧？ </font><br> 定义路径集合：<br> <img src="/images/14912158155574.jpg" alt=""></li>
-<li>meta path versus Predicate Path<br> meta path 在谓词是没有歧义的情况下是多余的。<br> <img src="/images/14912162745624.jpg" alt=""><br>在有歧义的情况下利用这个来去除多余的meta path。</li>
-<li>路径的选择<br> <img src="/images/14912163763921.jpg" alt=""><br> 利用这样来减少特征只保留一些最有判别力的特征，应该也就是不同的路径吧</li>
-<li>Fact Interpretation<br> 找出路径集合的一个子集，保留一些最有代表性的路径，去除无用的路径。<br> <img src="/images/14912168882944.jpg" alt=""></li>
-</ol>
+<li>数据集：   <ul>
+<li>利用原VQA的数据集作为不平衡的数据集</li>
+<li>同时人工的改进原VQA的数据集，使得其更加平衡，其方法与Yin and Yang 那篇类似。</li>
+</ul>
 </li>
-<li><p>实验<br>  在实验中使用anchored predicate paths （只有端节点有标签,特征更少？为什么？因为有歧义的情况下，meta path 会更多？例如(lyricist, authorOf, song),(writer, authorOf, book),在meta path 中就会表示成两种，而这个只会有一种）而不用meta paths（所有节点都有标签）<br><img src="/images/14912174451881.jpg" alt=""></p>
+<li>测试已有的模型以及baselines：<ul>
+<li>模型： <ul>
+<li>Deeper LSTM Question + norm Image：与原始论文VQA：visual question answering 中的方法一样</li>
+<li>Hierarchical Co-attention（HieCoAtt)：对语言的编码采用分层的形式，分别在word-level，phrase-level，entire question-level 上进行编码，最后组合起来。<strong>（待细读原论文）</strong>        * Multimodal Compact Bilinear Pooling（MCB）：采用Multimodal Compact Bilinear Pooling的机制。 <strong>（待细读原论文）</strong></li>
+</ul>
+</li>
+<li>baselines：（都与Yin and Yang 那篇一样，不赘述了）<ul>
+<li>prior</li>
+<li>language-only</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>对比平衡和不平衡的数据集：<br>  <img src="/images/14920775194879.jpg" alt=""><br>  会发现确实可以体现语言的偏差，用不平衡的数据训练的效果在平衡数据集中测试能够发现明显不好。</li>
+<li>反例的解释：<br>  提出一个模型，不仅只回答问题，同时还给出一张与原图片相似的，但答案又不一样的图片。举例，给一张图片，问题：这个消防栓什么颜色？答：红色。同时输出一张图片与原图相似，但答案不是红色。</li>
+<li>模型：<br>  在之前构造数据集的时候，是通过给定图片$I$,问题$Q$，人工选择答案不同的图片$I’$来作为补充数据。那么此时就可以利用$I’$来进行有监督的学习，选取与$I$最相近的24个图片的集合$I_{NN}$（利用VGGNet的倒数第二层的激活值，用L2距离计算邻近程度），学习$I’$在其中的位置。$I’$是人工选择的，机器只负责提供$I_{24}这24张图片$<ul>
+<li>回答的训练：<ul>
+<li>输入： $I,Q,A$，表示图片，问题，答案</li>
+</ul>
+</li>
+<li>训练的训练<ul>
+<li>输入： $Q,A$，表示问题，答案。$I’$反例图片，$I_{NN}(I’ \in I_{NN}）$</li>
+</ul>
+</li>
+<li>模型的结构：<ul>
+<li>共享的部分：<br>  学习图片和问题的表达，使用CNN embedding 作为一个分支表达image，LSTM embedding 作为另一个分支表达问题，最后融合。（注意这里的图片需要传入25个，$I$和$I_{NN}$</li>
+<li>回答部分：<br>  与原始的方法一样，接MLP，再用softmax预测，将cross-entropy loss 作为损失函数</li>
+<li>解释部分：<br>  利用$QI$的embedding，和需要解释的$A$，来训练计算这两个的内积来获取每个图片的一个标量值，这K个标量值通过一个全连接层来获取K个$S(I_i)$，越小表示越不可能是好的反例。<br>  利用hinge ranking losses来鼓励$S(I’) - S(I_i) &gt; M - \epsilon， I_i \in {I_1,…,I_k} \backslash {I’}$,等于最小化下面这个表达式：<br>  $$<br>  max(0,M-(S(I’)-S(I_i)))<br>  $$<br>  将两个损失结合起来可以得到：<br>  $$<br>  L = -logP(A|I,Q) + \lambda \sum_imax(0,M - (S(I’) - S(I_i)))<br>  $$<br>  其中，$P(A|I,Q) = \frac{e^{f_A}}{\sum_je^{f_j}}$，$f_A$表示softmax中$A$的那个神经元的输出</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>解释模型的baseline，以及对比：<ul>
+<li>random： 在$I_{NN}$中随机选一个</li>
+<li>distance： 在$I_{NN}$中选最相似的一个</li>
+<li>VQA model： 在$I_{NN}$中$P(A|Q,I_i)$最小的，也就是最不可能为A的一张图片<br>选用top 5 来作为评判<br><img src="/images/14920799546282.jpg" alt=""></li>
+</ul>
 </li>
 </ul>
 
@@ -455,8 +475,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/04/05/PRA_ECM2010_note/" rel="next" title="论文笔记PRA_ECM2010">
-                <i class="fa fa-chevron-left"></i> 论文笔记PRA_ECM2010
+              <a href="/2017/04/19/Yin_Yang_note/" rel="next" title="论文笔记Yin and Yang">
+                <i class="fa fa-chevron-left"></i> 论文笔记Yin and Yang
               </a>
             
           </div>
@@ -465,8 +485,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/04/10/CPRA_ACL2016_note/" rel="prev" title="论文笔记CPRA_ACL2016">
-                论文笔记CPRA_ACL2016 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/04/23/Ask_me_anything_note/" rel="prev" title="论文笔记Ask Me Anything">
+                论文笔记Ask Me Anything <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -616,7 +636,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#A-Discriminative-Predicate-Path-Mining-Approach"><span class="nav-number">1.</span> <span class="nav-text">A Discriminative Predicate Path Mining Approach</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Making-the-V-in-VQA-matter"><span class="nav-number">1.</span> <span class="nav-text">Making the V in VQA matter:</span></a></li></ol></div>
             
 
           </div>
