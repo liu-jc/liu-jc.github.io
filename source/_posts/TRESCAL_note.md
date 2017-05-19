@@ -137,7 +137,7 @@ categories: paper_note
        -V_{k_l}^TA_{k_l}^TX_{k_{lr}}A_{k_r}V_{k_l} + \Sigma_{k_l}^2V_{k_l}^TR_kV_{k_r}\Sigma_{k_r}^2 + \lambda V_{k_l}^TR_kV_{k_r} = 0 \\
        \Sigma_{k_l}^2V_{k_l}^TR_kV_{k_r}\Sigma_{k_r}^2 + \lambda V_{k_l}^TR_kV_{k_r} &= V_{k_l}^TA_{k_l}^TX_{k_{lr}}A_{k_r}V_{k_l} \\
        diag(\Sigma_{k_l}^2)diag(\Sigma_{k_r}^2)^T \odot V_{k_l}^TR_kV_{k_r} + \lambda V_{k_l}^TR_kV_{k_r} &= V_{k_l}^TA_{k_l}^TX_{k_{lr}}A_{k_r}V_{k_l} \\
-       (diag(\Sigma_{k_l}^2)diag(\Sigma_{k_r}^2)^T + \lambda \mathbf{1})V_{k_l}^TR_kV_{k_r} &= V_{k_l}^TA_{k_l}^TX_{k_{lr}}A_{k_r}V_{k_l} 
+       (diag(\Sigma_{k_l}^2)diag(\Sigma_{k_r}^2)^T + \lambda \mathbf{1}) \odot V_{k_l}^TR_kV_{k_r} &= V_{k_l}^TA_{k_l}^TX_{k_{lr}}A_{k_r}V_{k_l} 
         \end{align*}
         $$
         所以：
