@@ -9,15 +9,15 @@ categories: paper_note
 总结自己对这篇文章的理解以及详细的公式推导，可能不太到位，欢迎指教。
 <!--more--> 
 ## Typed Tensor Decomposition of Knowledge Bases for Relation Extraction 
-### 主要贡献： 
+### 主要贡献 
 1. 利用张量分解，在RESCAL 的基础上，提出了一个创建新的KB embedding 的模型 TRESCAL。利用了实体的类型信息，降低了时间和空间的复杂度。
 2. 在关系抽取的任务上，提出的模型相比于之前的模型有着显著的提高。
 
-### 现有的张量分解的模型： 
+### 现有的张量分解的模型
 1. CP decompositions，通过一些rank为1的张量的和来估计一个张量。
 2. Tucker decomposition，高维度的SVD分解，将张量分解成一个核心的张量乘以每个维度的矩阵。
 
-### 模型： 
+### 模型
 1. 在张量中表示二元关系：  
     假设有$n$种实体，$m$种关系的类型。  
     $\Gamma = {(e_i,r_k,e_j)}$,$(e_i,r_k,e_j)$三元组表示这存在着这样的二元关系，第$i$个实体和第$j$个实体，存在着第$k$种的关系。  
@@ -156,7 +156,7 @@ categories: paper_note
     从文本语料和结构化的知识库中运用TRESCAL 进行关系抽取。  
     单纯使用TRESCAL模型效果并不好，如果使用TR + RI13能够取得比较好的效果。
     
-### Future work：
+### Future work
 1. 可能可以利用一些tags来帮助词汇的语义表达
 2. 在三元组中考虑其他限制，不局限于实体的类型。
 
