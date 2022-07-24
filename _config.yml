@@ -1,0 +1,12 @@
+# basic info
+title: Juncheng Liu
+logo: /assets/img/my_pic.jpg
+description: PhD Candidate at NUS
+location: xxxx
+email: juncheng.liu@u.nus.edu
+github: liu-jc
+linkedin: juncheng-liu
+# Others 
+show_downloads: true 
+google_analytics:
+theme: jekyll-theme-minimal
