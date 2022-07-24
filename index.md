@@ -1,8 +1,9 @@
 ---
 layout: homepage
+title: Homepage 
 ---
 ## About me
-I am a PhD candidate in Computer  Science at National University of Singapore, advised by [Prof. Xiaokui Xiao](https://www.comp.nus.edu.sg/~xiaoxk/). I am also fortune to collaborate with [Prof. Bryan Hooi](https://bhooi.github.io/), [Prof. Kenji Kawaguchi](https://ml.comp.nus.edu.sg/kawaguchi), and [Prof. Muhao Chen](https://muhaochen.github.io/).
+I am a PhD candidate in Computer  Science at National University of Singapore, advised by [Prof. Xiaokui Xiao](https://www.comp.nus.edu.sg/~xiaoxk/). I also collaborate with [Prof. Bryan Hooi](https://bhooi.github.io/), [Prof. Kenji Kawaguchi](https://ml.comp.nus.edu.sg/kawaguchi), and [Prof. Muhao Chen](https://muhaochen.github.io/).
 My research interests are graph neural networks, graph learning, and knowledge graphs.
 
 Prior to my PhD study, I received my bachelor degree in Computer Science from Sichuan University.
