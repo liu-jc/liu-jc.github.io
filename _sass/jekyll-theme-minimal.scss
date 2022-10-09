@@ -51,7 +51,8 @@ a {
 
 a:hover, a:focus {
   color:#069;
-  font-weight: bold;
+  // font-weight: bold;
+  text-decoration: underline;
 }
 
 a small {
@@ -213,7 +214,7 @@ hr {
 }
 
 footer {
-  width:270px;
+  width:200px;
   float:left;
   position:fixed;
   bottom:50px;

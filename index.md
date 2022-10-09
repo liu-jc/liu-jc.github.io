@@ -3,7 +3,7 @@ layout: homepage
 title: Homepage 
 ---
 ## About me
-I am a PhD candidate in Computer  Science at School of Computing (SoC), National University of Singapore (NUS), advised by [Prof. Xiaokui Xiao](https://www.comp.nus.edu.sg/~xiaoxk/). I also collaborate with [Prof. Bryan Hooi](https://bhooi.github.io/), [Prof. Kenji Kawaguchi](https://ml.comp.nus.edu.sg/kawaguchi), and [Prof. Muhao Chen](https://muhaochen.github.io/).
+I am a PhD candidate in Computer  Science at School of Computing (SoC), National University of Singapore (NUS), advised by [Prof. Xiaokui Xiao](https://www.comp.nus.edu.sg/~xiaoxk/). I also closely collaborate with [Prof. Bryan Hooi](https://bhooi.github.io/), [Prof. Kenji Kawaguchi](https://ml.comp.nus.edu.sg/kawaguchi), and [Prof. Muhao Chen](https://muhaochen.github.io/).
 My research interests are graph neural networks, graph learning, and knowledge graphs.
 
 Prior to my PhD study, I received my bachelor degree in Computer Science from Sichuan University, China. 
@@ -20,7 +20,8 @@ _Annual Conference of the North American Chapter of the Association for Computat
 
 * [LSCALE: Latent Space Clustering-Based Active Learning for Node Classification](https://arxiv.org/abs/2012.07065)   
 **Juncheng Liu**, Yiwei Wang, Bryan Hooi, Renchi Yang, Xiaokui Xiao.   
-_European Conference on Machine Learning and Principles and Practice of Knowledge Discovery in Databases (ECML-PKDD) 2022._
+_European Conference on Machine Learning and Principles and Practice of Knowledge Discovery in Databases (ECML-PKDD) 2022._        
+\[[code](https://github.com/liu-jc/LSCALE)\]
 
 * [EIGNN: Efficient Infinite-Depth Graph Neural Networks](https://proceedings.neurips.cc/paper/2021/hash/9bd5ee6fe55aaeb673025dbcb8f939c1-Abstract.html)   
 **Juncheng Liu**, Kenji Kawaguchi, Bryan Hooi, Yiwei Wang, Xiaokui Xiao.     
