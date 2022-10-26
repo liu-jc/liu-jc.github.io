@@ -10,7 +10,7 @@ Prior to my PhD study, I received my bachelor degree in Computer Science from Si
 
 ## Publications
 
-*  [MGNNI: Multiscale Graph Neural Networks with Implicit Layers]()   
+*  [MGNNI: Multiscale Graph Neural Networks with Implicit Layers](https://arxiv.org/abs/2210.08353)   
 **Juncheng Liu**, Bryan Hooi, Kenji Kawaguchi, Xiaokui Xiao.    
 _Neural Information Processing Systems (NeurIPS) 2022._
 
