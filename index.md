@@ -10,9 +10,10 @@ Prior to my PhD study, I received my bachelor degree in Computer Science from Si
 
 ## Publications
 
-*  [MGNNI: Multiscale Graph Neural Networks with Implicit Layers](https://arxiv.org/abs/2210.08353)   
+*  [MGNNI: Multiscale Graph Neural Networks with Implicit Layers](https://openreview.net/forum?id=sZAbXH4ezvg)   
 **Juncheng Liu**, Bryan Hooi, Kenji Kawaguchi, Xiaokui Xiao.    
-_Neural Information Processing Systems (NeurIPS) 2022._
+_Neural Information Processing Systems (NeurIPS) 2022._      
+\[[code](https://github.com/liu-jc/MGNNI)\]
 
 *  [Dangling-Aware Entity Alignment with Mixed High-Order Proximities](https://aclanthology.org/2022.findings-naacl.88/)      
 **Juncheng Liu**, Zequn Sun, Bryan Hooi, Yiwei Wang, Dayiheng Liu, Baosong Yang, Xiaokui Xiao, Muhao Chen.  
@@ -27,6 +28,9 @@ _European Conference on Machine Learning and Principles and Practice of Knowledg
 **Juncheng Liu**, Kenji Kawaguchi, Bryan Hooi, Yiwei Wang, Xiaokui Xiao.     
 _Neural Information Processing Systems (NeurIPS) 2021._     
 \[[code](https://github.com/liu-jc/EIGNN)\]
+
+* [Node-wise Diffusion for Scalable Graph Learning]()      
+Keke Huang, Jing Tang, **Juncheng Liu**, Renchi Yang, and Xiaokui Xiao.     
 
 * [Should We Rely on Entity Mentions for Relation Extraction? Debiasing Relation Extraction with Counterfactual Analysis](https://arxiv.org/abs/2205.03784)      
 Yiwei Wang, Muhao Chen, Wenxuan Zhou, Yujun Cai, Yuxuan Liang, Dayiheng Liu, Baosong Yang, **Juncheng Liu**, Bryan Hooi.      
@@ -54,6 +58,7 @@ Research Intern at Computer Vision Group, working with [Dr. Zequn Jie](https://s
 
 
 ## Selected Awards & Honors 
+* Dean's Graduate Research Excellence Award, NUS SoC, 2023
 * Research Achievement, NUS SoC, 2022
 * Best Research Paper Award in VLDB 2021
 * National Scholarship, Ministry of Education of the P. R. China, 2016 & 2017
