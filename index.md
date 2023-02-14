@@ -30,7 +30,8 @@ _Neural Information Processing Systems (NeurIPS) 2021._
 \[[code](https://github.com/liu-jc/EIGNN)\]
 
 * [Node-wise Diffusion for Scalable Graph Learning]()      
-Keke Huang, Jing Tang, **Juncheng Liu**, Renchi Yang, and Xiaokui Xiao.     
+Keke Huang, Jing Tang, **Juncheng Liu**, Renchi Yang, and Xiaokui Xiao.   
+_Proceedings of the ACM Web Conference (TheWebConf) 2023._       
 
 * [Should We Rely on Entity Mentions for Relation Extraction? Debiasing Relation Extraction with Counterfactual Analysis](https://arxiv.org/abs/2205.03784)      
 Yiwei Wang, Muhao Chen, Wenxuan Zhou, Yujun Cai, Yuxuan Liang, Dayiheng Liu, Baosong Yang, **Juncheng Liu**, Bryan Hooi.      
