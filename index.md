@@ -25,11 +25,11 @@ _European Conference on Machine Learning and Principles and Practice of Knowledg
 \[[code](https://github.com/liu-jc/LSCALE)\]
 
 * [EIGNN: Efficient Infinite-Depth Graph Neural Networks](https://proceedings.neurips.cc/paper/2021/hash/9bd5ee6fe55aaeb673025dbcb8f939c1-Abstract.html)   
-**Juncheng Liu**, Kenji Kawaguchi, Bryan Hooi, Yiwei Wang, Xiaokui Xiao.     
+**Juncheng Liu**, Kenji Kawaguchi, Bryan Hooi, Yiwei Wang, Xiaokui Xiao.      
 _Neural Information Processing Systems (NeurIPS) 2021._     
 \[[code](https://github.com/liu-jc/EIGNN)\]
 
-* [Node-wise Diffusion for Scalable Graph Learning]()      
+* [Node-wise Diffusion for Scalable Graph Learning](https://dl.acm.org/doi/abs/10.1145/3543507.3583408)      
 Keke Huang, Jing Tang, **Juncheng Liu**, Renchi Yang, and Xiaokui Xiao.   
 _Proceedings of the ACM Web Conference (TheWebConf) 2023._       
 
@@ -41,8 +41,12 @@ _Annual Conference of the North American Chapter of the Association for Computat
 Xinjian Luo, Xiaokui Xiao, Yuncheng Wu, **Juncheng Liu**, Beng Chin Ooi.        
 _AAAI Conference on Artificial Intelligence (AAAI) 2022._
 
+* [No PANE, No Gain: Scaling Attributed Network Embedding in a Single Server](https://dl.acm.org/doi/abs/10.1145/3542700.3542711)   
+Renchi Yang, Jieming Shi, Xiaokui Xiao, Yin Yang, Sourav S. Bhowmick, **Juncheng Liu**.    
+_SIGMOD Record 2022. (ACM SIGMOD Research Highlight Award)_
+
 * [Scaling Attributed Network Embedding to Massive Graphs](https://vldb.org/pvldb/vol14/p37-yang.pdf)      
-Renchi Yang, Jieming Shi, Xiaokui Xiao,Yin Yang, **Juncheng Liu**, SouravS. Bhowmick.        
+Renchi Yang, Jieming Shi, Xiaokui Xiao, Yin Yang, **Juncheng Liu**, Sourav S. Bhowmick.        
 _Proceedings of the VLDB Endowment 2021. (Best Research Paper Award)_
 
 * [NodeAug: Semi-Supervised Node Classification with Data Augmentation](https://dl.acm.org/doi/10.1145/3394486.3403063)     
@@ -58,8 +62,15 @@ Research Intern at Machine Intelligence Group, working with [Dr. Dayiheng Liu](h
 Research Intern at Computer Vision Group, working with [Dr. Zequn Jie](https://scholar.google.com/citations?user=4sKGNB0AAAAJ&hl=zh-CN) and [Dr. Lin Ma](https://forestlinma.com/).
 
 
+## Professional Services
+* Programme Committee Member or Reviewer: KDD 2023, NeurIPS 2023, ICLR 2024, TKDE. 
+* Subreviewer or External Reviewer: WWW 2022. 
+
+
 ## Selected Awards & Honors 
 * Dean's Graduate Research Excellence Award, NUS SoC, 2023
+* NeurIPS Scholar Award, 2022
 * Research Achievement, NUS SoC, 2022
+* 2022 ACM SIGMOD Research Highlight Award
 * Best Research Paper Award in VLDB 2021
 * National Scholarship, Ministry of Education of the P. R. China, 2016 & 2017
