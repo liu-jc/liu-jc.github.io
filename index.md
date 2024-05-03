@@ -3,12 +3,16 @@ layout: homepage
 title: Homepage 
 ---
 ## About me
-I am a PhD candidate in Computer  Science at School of Computing (SoC), National University of Singapore (NUS), advised by [Prof. Xiaokui Xiao](https://www.comp.nus.edu.sg/~xiaoxk/). I also closely collaborate with [Prof. Bryan Hooi](https://bhooi.github.io/), [Prof. Kenji Kawaguchi](https://ml.comp.nus.edu.sg/kawaguchi), and [Prof. Muhao Chen](https://muhaochen.github.io/).
-My research interests are graph neural networks, graph learning, and knowledge graphs.
+I am currently a Research Scientist at [Salesforce AI Research](https://www.salesforceairesearch.com/). I obtained PhD in Computer  Science at School of Computing (SoC), National University of Singapore (NUS), advised by [Prof. Xiaokui Xiao](https://www.comp.nus.edu.sg/~xiaoxk/). During my PhD, I also closely collaborated with [Prof. Bryan Hooi](https://bhooi.github.io/), [Prof. Kenji Kawaguchi](https://ml.comp.nus.edu.sg/kawaguchi), and [Prof. Muhao Chen](https://muhaochen.github.io/).
+My research interests are graph neural networks, graph learning, and time series.
 
 Prior to my PhD study, I received my bachelor degree in Computer Science from Sichuan University, China. 
 
 ## Publications
+*  [Scalable and Effective Implicit Graph Neural Networks on Large Graphs](https://openreview.net/forum?id=sZAbXH4ezvg)   
+**Juncheng Liu**, Bryan Hooi, Kenji Kawaguchi, Yiwei Wang, Chaosheng Dong, Xiaokui Xiao.    
+_International Conference on Learning Representations (ICLR) 2024._      
+\[[code]()\]
 
 *  [MGNNI: Multiscale Graph Neural Networks with Implicit Layers](https://openreview.net/forum?id=sZAbXH4ezvg)   
 **Juncheng Liu**, Bryan Hooi, Kenji Kawaguchi, Xiaokui Xiao.    
@@ -56,6 +60,7 @@ _ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD) 2020._
 ## Experiences 
 <!-- * [Sep. 2021 – Feb. 2022] Alibaba DAMO Academy, Research Intern at Machine Intelligence Group, working with [Dr. Dayiheng Liu](https://dayihengliu.github.io/).
 * [Jan. 2018 – Jul. 2018] Tencent AI Lab, Research Intern at Computer Vision Group, working with [Dr. Zequn Jie](https://scholar.google.com/citations?user=4sKGNB0AAAAJ&hl=zh-CN) and [Dr. Lin Ma](https://forestlinma.com/). -->
+* Amazon, Jun. 2023 - Sep. 2023, Applied Scientist Intern at International Machine Learning Group, working with [Dr. Chaosheng Dong](https://chaoshengdong.github.io/). 
 * Alibaba DAMO Academy, Sep. 2021 – Feb. 2022, 
 Research Intern at Machine Intelligence Group, working with [Dr. Dayiheng Liu](https://dayihengliu.github.io/).
 * Tencent AI Lab, Jan. 2018 – Jul. 2018, 
@@ -63,7 +68,7 @@ Research Intern at Computer Vision Group, working with [Dr. Zequn Jie](https://s
 
 
 ## Professional Services
-* Programme Committee Member or Reviewer: KDD 2023, NeurIPS 2023, ICLR 2024, TKDE. 
+* Programme Committee Member or Reviewer: KDD 2023, NeurIPS 2023, ICLR 2024, ICML 2024, TKDE. 
 * Subreviewer or External Reviewer: WWW 2022. 
 
 
