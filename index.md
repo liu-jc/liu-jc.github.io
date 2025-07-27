@@ -9,15 +9,31 @@ My research interests are graph neural networks, graph learning, and time series
 Prior to my PhD study, I received my bachelor degree in Computer Science from Sichuan University, China. 
 
 ## Publications
+*  [Moirai-MoE: Empowering Time Series Foundation Models with Sparse Mixture of Experts](https://arxiv.org/abs/2410.10469)   
+Xu Liu, **Juncheng Liu**, Gerald Woo, Taha Aksu, Yuxuan Liang, Roger Zimmermann, Chenghao Liu, Silvio Savarese, Caiming Xiong, Doyen Sahoo.        
+_International Conference on Machine Learning (ICML) 2025._    
+\[[Model](https://huggingface.co/Salesforce/moirai-moe-1.0-R-base)\] \[[Code](https://github.com/SalesforceAIResearch/uni2ts/tree/main/project/moirai-moe-1)\]
+
+*  [UniTST: Effectively Modeling Inter-Series and Intra-Series Dependencies for Multivariate Time Series Forecasting](https://openreview.net/forum?id=sZAbXH4ezvg)   
+**Juncheng Liu**, Chenghao Liu, Gerald Woo, Yiwei Wang, Bryan Hooi, Caiming Xiong, Doyen Sahoo.    
+_Transactions on Machine Learning Research (TMLR) 2025._    
+\[[Code]()\]
+
+*  [GIFT-Eval: A Benchmark For General Time Series Forecasting Model Evaluation](https://arxiv.org/abs/2410.10393)   
+Taha Aksu, Gerald Woo, **Juncheng Liu**, Xu Liu, Chenghao Liu, Silvio Savarese, Caiming Xiong, Doyen Sahoo.     
+_Time Series in the Age of Large Models Workshop at NeurIPS 2024_    
+\[[LeaderBoard](https://huggingface.co/spaces/Salesforce/GIFT-Eval)\] \[[Code](https://github.com/SalesforceAIResearch/uni2ts/tree/main/project/moirai-moe-1)\]
+
+
 *  [Scalable and Effective Implicit Graph Neural Networks on Large Graphs](https://openreview.net/forum?id=sZAbXH4ezvg)   
 **Juncheng Liu**, Bryan Hooi, Kenji Kawaguchi, Yiwei Wang, Chaosheng Dong, Xiaokui Xiao.    
 _International Conference on Learning Representations (ICLR) 2024._      
-\[[code]()\]
+\[[Code]()\]
 
 *  [MGNNI: Multiscale Graph Neural Networks with Implicit Layers](https://openreview.net/forum?id=sZAbXH4ezvg)   
 **Juncheng Liu**, Bryan Hooi, Kenji Kawaguchi, Xiaokui Xiao.    
 _Neural Information Processing Systems (NeurIPS) 2022._      
-\[[code](https://github.com/liu-jc/MGNNI)\]
+\[[Code](https://github.com/liu-jc/MGNNI)\]
 
 *  [Dangling-Aware Entity Alignment with Mixed High-Order Proximities](https://aclanthology.org/2022.findings-naacl.88/)      
 **Juncheng Liu**, Zequn Sun, Bryan Hooi, Yiwei Wang, Dayiheng Liu, Baosong Yang, Xiaokui Xiao, Muhao Chen.  
@@ -26,12 +42,12 @@ _Annual Conference of the North American Chapter of the Association for Computat
 * [LSCALE: Latent Space Clustering-Based Active Learning for Node Classification](https://arxiv.org/abs/2012.07065)   
 **Juncheng Liu**, Yiwei Wang, Bryan Hooi, Renchi Yang, Xiaokui Xiao.   
 _European Conference on Machine Learning and Principles and Practice of Knowledge Discovery in Databases (ECML-PKDD) 2022._        
-\[[code](https://github.com/liu-jc/LSCALE)\]
+\[[Code](https://github.com/liu-jc/LSCALE)\]
 
 * [EIGNN: Efficient Infinite-Depth Graph Neural Networks](https://proceedings.neurips.cc/paper/2021/hash/9bd5ee6fe55aaeb673025dbcb8f939c1-Abstract.html)   
 **Juncheng Liu**, Kenji Kawaguchi, Bryan Hooi, Yiwei Wang, Xiaokui Xiao.      
 _Neural Information Processing Systems (NeurIPS) 2021._     
-\[[code](https://github.com/liu-jc/EIGNN)\]
+\[[Code](https://github.com/liu-jc/EIGNN)\]
 
 * [Node-wise Diffusion for Scalable Graph Learning](https://dl.acm.org/doi/abs/10.1145/3543507.3583408)      
 Keke Huang, Jing Tang, **Juncheng Liu**, Renchi Yang, and Xiaokui Xiao.   
