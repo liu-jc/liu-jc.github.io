@@ -14,7 +14,7 @@ Xu Liu, **Juncheng Liu**, Gerald Woo, Taha Aksu, Yuxuan Liang, Roger Zimmermann,
 _International Conference on Machine Learning (ICML) 2025._    
 \[[Model](https://huggingface.co/Salesforce/moirai-moe-1.0-R-base)\] \[[Code](https://github.com/SalesforceAIResearch/uni2ts/tree/main/project/moirai-moe-1)\]
 
-*  [UniTST: Effectively Modeling Inter-Series and Intra-Series Dependencies for Multivariate Time Series Forecasting](https://openreview.net/forum?id=sZAbXH4ezvg)   
+*  [UniTST: Effectively Modeling Inter-Series and Intra-Series Dependencies for Multivariate Time Series Forecasting](https://arxiv.org/abs/2406.04975)   
 **Juncheng Liu**, Chenghao Liu, Gerald Woo, Yiwei Wang, Bryan Hooi, Caiming Xiong, Doyen Sahoo.    
 _Transactions on Machine Learning Research (TMLR) 2025._    
 \[[Code]()\]
